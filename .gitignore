@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Things created by Configure
+.deps/
+Makefile
+config.log
+config.status
+libtool
