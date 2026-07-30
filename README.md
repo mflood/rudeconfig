@@ -74,7 +74,7 @@ Or vendor it with `FetchContent`:
 include(FetchContent)
 FetchContent_Declare(rudeconfig
     GIT_REPOSITORY https://github.com/mflood/rudeconfig
-    GIT_TAG master)
+    GIT_TAG v6.0.1)
 FetchContent_MakeAvailable(rudeconfig)
 target_link_libraries(myapp PRIVATE rudeconfig::rudeconfig)
 ```
