@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(rudeconfig
-    VERSION 5.1.0
+    VERSION 5.1.1
     DESCRIPTION "C++ library for reading and writing configuration/.ini files"
     HOMEPAGE_URL "https://github.com/mflood/rudeconfig"
     LANGUAGES CXX)
@@ -83,6 +83,33 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/rudeconfig-config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/rudeconfig-config-version.cmake"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rudeconfig")
+
+# The .pc file must not bake in the configure-time CMAKE_INSTALL_PREFIX: that
+# breaks "cmake --install --prefix <dir>", which is what the README teaches.
+# Express prefix relative to ${pcfiledir} instead, so the file stays correct
+# wherever it lands.  Walk back up one "../" per component of
+# <libdir>/pkgconfig -- computed by hand rather than with file(RELATIVE_PATH),
+# which requires absolute arguments and rejects "/" as a root on Windows.
+# Falls back to the absolute prefix if the caller set an absolute
+# CMAKE_INSTALL_LIBDIR, where a relative path is not meaningful.
+if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
+    set(RUDECONFIG_PC_PREFIX "${CMAKE_INSTALL_PREFIX}")
+else()
+    file(TO_CMAKE_PATH "${CMAKE_INSTALL_LIBDIR}/pkgconfig" RUDECONFIG_PC_SUBDIR)
+    string(REGEX REPLACE "/+" "/" RUDECONFIG_PC_SUBDIR "${RUDECONFIG_PC_SUBDIR}")
+    string(REGEX REPLACE "^/+|/+$" "" RUDECONFIG_PC_SUBDIR "${RUDECONFIG_PC_SUBDIR}")
+    string(REPLACE "/" ";" RUDECONFIG_PC_PARTS "${RUDECONFIG_PC_SUBDIR}")
+    set(RUDECONFIG_PC_REL_PREFIX "")
+    foreach(part IN LISTS RUDECONFIG_PC_PARTS)
+        if(NOT part STREQUAL "" AND NOT part STREQUAL ".")
+            string(APPEND RUDECONFIG_PC_REL_PREFIX "../")
+        endif()
+    endforeach()
+    if(RUDECONFIG_PC_REL_PREFIX STREQUAL "")
+        set(RUDECONFIG_PC_REL_PREFIX "./")
+    endif()
+    set(RUDECONFIG_PC_PREFIX "\${pcfiledir}/${RUDECONFIG_PC_REL_PREFIX}")
+endif()
 
 configure_file(rudeconfig.pc.in "${CMAKE_CURRENT_BINARY_DIR}/rudeconfig.pc" @ONLY)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/rudeconfig.pc"

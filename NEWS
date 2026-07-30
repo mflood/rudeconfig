@@ -3,6 +3,27 @@ See ChangeLog for more detailed information on internal changes
 See the end for copying conditions.
 
 _______________________________________________________________________________
+Release 5.1.1 - Matthew Flood 2026-07-30
+
+	- Fixed out-of-bounds read in getDataNameAt() and getDataValueAt().
+	  Both indexed the data-member vector with no bounds check, so an
+	  out-of-range index read unowned memory instead of returning NULL
+	  as documented.  The sentinel loop recommended by config.h's own
+	  example was therefore unsafe on every use.  They now return NULL.
+	- rude::Config is no longer copyable.  It owns its implementation
+	  through a raw pointer, so the compiler-generated copy left two
+	  objects owning it and double-freed on destruction; putting a
+	  Config in a container or passing it by value corrupted the heap.
+	  Copy construction and copy assignment are now deleted, which turns
+	  that silent corruption into a compile error.  Pass by reference.
+	- Fixed pkg-config file: it hardcoded the prefix given at configure
+	  time, so installing with "cmake --install --prefix <dir>" produced
+	  a rudeconfig.pc still pointing at the configure-time prefix (by
+	  default /usr/local).  The prefix is now relative to ${pcfiledir}.
+	- Added regression tests for all three, including an out-of-range
+	  enumeration test that fails under AddressSanitizer without the fix.
+
+_______________________________________________________________________________
 Release 5.1.0 - Matthew Flood 2026-07-30
 
 	- Fixed infinite loop in Config::load() on platforms where char
