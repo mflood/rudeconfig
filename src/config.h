@@ -59,6 +59,14 @@ public:
 	Config();
 
 	//=
+	// Config owns its implementation through a raw pointer, so copying an
+	// instance would leave two objects owning it and double-free on destruction.
+	// Copying is therefore disabled - pass Config by reference instead.
+	//=
+	Config(const Config &) = delete;
+	Config &operator=(const Config &) = delete;
+
+	//=
 	// Returns the version of the component.
 	// 
 	// The version is specified by <b>X.Y</B> where: 

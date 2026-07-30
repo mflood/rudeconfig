@@ -123,6 +123,14 @@ int Section::getNumDataMembers() const
 
 const char *Section::getDataNameAt(int index) const
 {
+	// Out of range yields NULL, as documented in Section.h and config.h.
+	// Without this check the sentinel loop the header itself recommends
+	// walks off the end of the vector and reads unowned memory.
+	//
+	if(index < 0 || (size_t) index >= d_kv_vector.size())
+	{
+		return 0;
+	}
 	KeyValue *kv = d_kv_vector[index];
 	if(kv)
 	{
@@ -133,6 +141,14 @@ const char *Section::getDataNameAt(int index) const
 
 const char *Section::getDataValueAt(int index) const
 {
+	// Out of range yields NULL, as documented in Section.h and config.h.
+	// Without this check the sentinel loop the header itself recommends
+	// walks off the end of the vector and reads unowned memory.
+	//
+	if(index < 0 || (size_t) index >= d_kv_vector.size())
+	{
+		return 0;
+	}
 	KeyValue *kv = d_kv_vector[index];
 	if(kv)
 	{
