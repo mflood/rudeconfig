@@ -3,6 +3,20 @@ See ChangeLog for more detailed information on internal changes
 See the end for copying conditions.
 
 _______________________________________________________________________________
+Release 5.1.0 - Matthew Flood 2026-07-30
+
+	- Fixed infinite loop in Config::load() on platforms where char
+	  is unsigned (Linux/ARM, Linux/PowerPC): the parser stored
+	  istream::peek() results in char, so EOF was never detected.
+	- New CMake build system (autotools files retained but deprecated);
+	  installs CMake package config and pkg-config files.
+	- Code modernized to compile cleanly as C++17 with -Wall -Wextra
+	  (removed 'register', sprintf -> snprintf, UTF-8-safe isspace).
+	- Added test suite (ctest) and GitHub Actions CI covering Linux
+	  x86_64/ARM, macOS, and Windows, plus an ASan/UBSan job.
+	- New README with verified quick-start example.
+
+_______________________________________________________________________________
 Release 5.0.5-1 - Matthew Flood 2007-02-01
 
 	- Renamed header include guards in config.h from 

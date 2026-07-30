@@ -47,7 +47,7 @@ class ParserJuly2004: public AbstractParser
 protected:
 
 	void stripTrailing(std::string&);
-	inline bool isEOL(char c);
+	inline bool isEOL(int c);
 	inline bool chompEOL(std::istream& inputstream);
 	
 public:
