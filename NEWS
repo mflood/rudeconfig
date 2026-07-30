@@ -10,6 +10,15 @@ Release 6.0.1 - Matthew Flood 2026-07-30
 	  this library, so it looked harmless, but other ini readers treat a
 	  line with no delimiter as malformed or as a valueless flag - so an
 	  empty string did not survive leaving rudeconfig.
+	- deleteSection() now returns false when the section has already been
+	  deleted, as documented.  It reported success every time it was
+	  called for a section that still existed in the file, deleted or
+	  not.
+	- Asking about a section that does not exist no longer inserts an
+	  empty entry into the internal section map.  setSection() and
+	  deleteSection() looked names up with std::map::operator[], which
+	  default-inserts, so repeatedly querying unknown section names grew
+	  the map for the lifetime of the object.
 	- load() now fails when given a directory.  A directory opens
 	  successfully as an ifstream on POSIX and then reads as empty, so
 	  load(".") returned true and handed back a silently empty

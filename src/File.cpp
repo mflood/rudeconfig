@@ -190,7 +190,11 @@ bool File::setSection(const char *sectionname, bool shouldCreate)
 	if(sectionname)
 	{
 		std::string name=sectionname;
-		Section *thesection = d_sectionmap[name];
+
+		// find(), not operator[] - see deleteSection().
+		//
+		std::map<std::string, Section*>::iterator iter = d_sectionmap.find(name);
+		Section *thesection = (iter != d_sectionmap.end()) ? iter->second : 0;
 		if(thesection)
 		{
 			if(!thesection->isDeleted())
@@ -239,9 +243,22 @@ bool File::deleteSection(const char *sectionname)
 	if(sectionname)
 	{
 		std::string name=sectionname;
-		Section *thesection = d_sectionmap[name];
+
+		// find(), not operator[]: the latter default-inserts a null Section*
+		// for every name that does not exist, so simply asking about an
+		// unknown section grew the map.
+		//
+		std::map<std::string, Section*>::iterator iter = d_sectionmap.find(name);
+		Section *thesection = (iter != d_sectionmap.end()) ? iter->second : 0;
 		if(thesection)
 		{
+				// Already deleted is documented as false, not a second success.
+				//
+				if(thesection->isDeleted())
+				{
+					return false;
+				}
+
 				thesection->isDeleted(true);
 				// Here is the interesting part, 
 				// By deleting the current section, we have effectively
