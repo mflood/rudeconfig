@@ -44,7 +44,22 @@ static void write(const char *path, const std::string &content)
     out << content;
 }
 
-// Loads and saves 'input', returning what ended up on disk.
+// Strips carriage returns so line-ending conventions do not enter into the
+// comparison. The library writes through a text-mode stream, so on Windows a
+// saved "\n" comes back as "\r\n"; these tests are about which lines survive
+// a round trip, not about which terminator the platform uses.
+static std::string normalizeNewlines(const std::string &text)
+{
+    std::string out;
+    out.reserve(text.size());
+    for (std::string::size_type i = 0; i < text.size(); ++i) {
+        if (text[i] != '\r')
+            out += text[i];
+    }
+    return out;
+}
+
+// Loads and saves 'input', returning what ended up on disk, newline-normalized.
 static std::string roundtrip(const std::string &input)
 {
     const char *path = "fidelity.ini";
@@ -54,7 +69,7 @@ static std::string roundtrip(const std::string &input)
         config.load(path);
         config.save();
     }
-    return slurp(path);
+    return normalizeNewlines(slurp(path));
 }
 
 int main()
