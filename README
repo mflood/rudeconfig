@@ -1,25 +1,34 @@
 README for RudeConfig
 See the end of file for copying conditions
 
-This file contains the following sections, please
-glance through them all before installing RudeConfig.
-
-	* Introduction
-	* Bug Reporting
-	* Copying
 
 *** INTRODUCTION ***
 
-RudeConfig is a library that allows applications 
-to (painlessly) read, modify, and create config / .ini
-files. 
+RudeConfig is a library that allows applications to (painlessly) read,
+modify, and create config / .ini files.
 
-Documentation, discussions, and new releases are available at 
+Full documentation, including a quick start and API notes, is in README.md.
 
-http://www.rudeserver.com/
+
+*** BUILDING ***
+
+RudeConfig builds with CMake:
+
+	cmake -B build -DCMAKE_BUILD_TYPE=Release
+	cmake --build build
+	ctest --test-dir build
+	cmake --install build
+
+Then include <rude/config.h> and link with -lrudeconfig, or use
+find_package(rudeconfig) from CMake, or pkg-config.
+
+The autotools build (configure / Makefile.am) was removed in this release.
+It had been deprecated since the CMake build landed, and its shipped
+config.guess dated from 2003, so it could not configure on any ARM machine -
+which today means every Apple Silicon Mac and every ARM Linux server.  If you
+need it, check out the v6.0.1 tag or earlier.
 
 See file `COPYING' for copying conditions.
-See file `INSTALL' for compilation and installation instructions.
 See file `NEWS' for a list of major changes in the current release.
 See file `THANKS' for a list of contributors.
 See file 'AUTHORS' for contact information
@@ -27,19 +36,15 @@ See file 'AUTHORS' for contact information
 
 *** BUG REPORTING ***
 
-Please Send bug reports to <rudeconfig@rudeserver.com>.
-A bug report should contain an adequate description of the 
-problem, your input, what you expected, what you got, 
-and why this is wrong.  Where applicable, please submit actual data
-files with your report. 
+Please report bugs at https://github.com/mflood/rudeconfig/issues
 
-Your feedback will help us to make a better and more portable package.
-Consider documentation errors as bugs, and report them as such.  If you
-develop anything pertaining to RudeConfig or have suggestions, let us know
-and share your findings by writing to <rudeconfig@rudeserver.com> or
-by visiting the discussion forum accessable from the RudeServer 
-website at http://www.rudeserver.com/
+A bug report should contain an adequate description of the problem, your
+input, what you expected, what you got, and why this is wrong.  Where
+applicable, please include actual data files.  Consider documentation errors
+as bugs, and report them as such.
 
+The rudeserver.com addresses and discussion forum referenced by older
+releases are no longer active.
 
 
 *** COPYING ***
