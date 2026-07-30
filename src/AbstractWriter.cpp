@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -28,8 +28,10 @@
 #define INCLUDED_IOSTREAM
 #endif
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 AbstractWriter::AbstractWriter()
 {
@@ -43,11 +45,10 @@ AbstractWriter::AbstractWriter()
 
 AbstractWriter::~AbstractWriter()
 {
-
 }
 
 
-void AbstractWriter::setOutputStream( std::ostream& stream)
+void AbstractWriter::setOutputStream(std::ostream &stream)
 {
 	d_outputstream = &stream;
 }
@@ -77,5 +78,5 @@ void AbstractWriter::preserveWhiteSpace(bool doit)
 	d_preservewhitespace = doit;
 }
 
-}} // end namespaces
-
+} // namespace config
+} // namespace rude

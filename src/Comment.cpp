@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -34,15 +34,17 @@
 #endif
 
 using namespace std;
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 Comment::Comment(const char *comment)
 {
 	d_comment = comment ? comment : "";
 }
 
-void Comment::acceptWriter(AbstractWriter& writer) const
+void Comment::acceptWriter(AbstractWriter &writer) const
 {
 	writer.visitComment(*this);
 }
@@ -52,5 +54,5 @@ const char *Comment::getComment() const
 	return d_comment.c_str();
 }
 
-}} // end namespace rude::config
-
+} // namespace config
+} // namespace rude

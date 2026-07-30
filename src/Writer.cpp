@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -65,102 +65,101 @@
 
 using namespace std;
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 
 Writer::Writer()
 {
-
 }
 
 Writer::~Writer()
 {
-
 }
 
 
-void Writer::visitFile(const File& /*configfile*/) const
+void Writer::visitFile(const File & /*configfile*/) const
 {
-
 }
 
-void Writer::visitSection(const Section& configsection) const
+void Writer::visitSection(const Section &configsection) const
 {
-		std::string name = configsection.getSectionName();
-		
-		// if there is a section name, we print it out [between brackets]
-		//
-		if(name != "")
+	std::string name = configsection.getSectionName();
+
+	// if there is a section name, we print it out [between brackets]
+	//
+	if(name != "")
+	{
+		if(configsection.isDeleted())
 		{
-			if( configsection.isDeleted() )
+			if(d_commentchar && d_preservedeleted)
 			{
-				if ( d_commentchar && d_preservedeleted )
-				{
-					*d_outputstream << d_commentchar << " ";
-				}
-				else
-				{
-					return;
-				}
+				*d_outputstream << d_commentchar << " ";
 			}
-		
-			int position = 0;
-			size_t location;
-
-			// escape all backslashes
-			//
-			while( (location = name.find("\\", position)) != string::npos )
+			else
 			{
-				// location points right at the '\'
-				name.insert(location,  "\\");
-				position = (int) location + 2;
+				return;
 			}
-
-			// escape all ']''s
-			//
-			while( (location = name.find("]", position)) != string::npos )
-			{
-				// location points right at the ']'
-				name.insert(location,  "\\");
-				position = (int) location + 2;
-			}
-			
-			*d_outputstream << "[" << name << "]";
-			
-			// If the section name has a comment, we print it out after the section name
-			//
-			if(configsection.getSectionComment()[0] != 0 && d_commentchar)
-			{
-				*d_outputstream << "\t" << d_commentchar << configsection.getSectionComment();
-			}
-
-			// newline ends the section header
-			//
-			*d_outputstream << "\n";
 		}
-}
 
-void Writer::visitComment(const Comment& comment) const
-{
-	if(d_preservecomments && d_commentchar && ( !comment.isDeleted() || d_preservedeleted ))
-	{
-			*d_outputstream << d_commentchar << comment.getComment() << "\n";
+		int position = 0;
+		size_t location;
+
+		// escape all backslashes
+		//
+		while((location = name.find('\\', position)) != string::npos)
+		{
+			// location points right at the '\'
+			name.insert(location, "\\");
+			position = (int) location + 2;
+		}
+
+		// escape all ']''s
+		//
+		while((location = name.find(']', position)) != string::npos)
+		{
+			// location points right at the ']'
+			name.insert(location, "\\");
+			position = (int) location + 2;
+		}
+
+		*d_outputstream << "[" << name << "]";
+
+		// If the section name has a comment, we print it out after the section name
+		//
+		if(configsection.getSectionComment()[0] != 0 && d_commentchar)
+		{
+			*d_outputstream << "\t" << d_commentchar << configsection.getSectionComment();
+		}
+
+		// newline ends the section header
+		//
+		*d_outputstream << "\n";
 	}
 }
 
-void Writer::visitWhiteSpace(const WhiteSpace& whitespace) const
+void Writer::visitComment(const Comment &comment) const
 {
-	if(d_preservewhitespace && ( !whitespace.isDeleted() || d_preservedeleted ))
+	if(d_preservecomments && d_commentchar && (!comment.isDeleted() || d_preservedeleted))
 	{
-			*d_outputstream << whitespace.getWhiteSpace();
+		*d_outputstream << d_commentchar << comment.getComment() << "\n";
+	}
+}
+
+void Writer::visitWhiteSpace(const WhiteSpace &whitespace) const
+{
+	if(d_preservewhitespace && (!whitespace.isDeleted() || d_preservedeleted))
+	{
+		*d_outputstream << whitespace.getWhiteSpace();
 	}
 }
 
 
-void Writer::visitKeyValue(const KeyValue& dataline) const
+void Writer::visitKeyValue(const KeyValue &dataline) const
 {
-	if(dataline.isDeleted() && ( !d_commentchar || !d_preservedeleted))
+	if(dataline.isDeleted() && (!d_commentchar || !d_preservedeleted))
 	{
 		// Don't preserve deleted data when comments are null
 		// or we don't want to preserve them
@@ -172,8 +171,8 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 		string value = dataline.getValue();
 		string comment = dataline.getComment();
 
-		string commentchar(1,d_commentchar);
-		
+		string commentchar(1, d_commentchar);
+
 
 		if(dataline.isDeleted())
 		{
@@ -191,10 +190,10 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 
 			// escape all backslashes
 			//
-			while( (location = key.find("\\", position)) != string::npos )
+			while((location = key.find('\\', position)) != string::npos)
 			{
 				// location points right at the '\'
-				key.insert(location,  "\\");
+				key.insert(location, "\\");
 				position = (int) location + 2;
 			}
 
@@ -206,10 +205,10 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 			{
 				position = 0;
 
-				while( (location = key.find(commentchar, position)) != string::npos )
+				while((location = key.find(commentchar, position)) != string::npos)
 				{
 					// location points right at the '"'
-					key.insert(location,  "\\");
+					key.insert(location, "\\");
 					position = (int) location + 2;
 				}
 			}
@@ -224,10 +223,10 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 					string delimiter(1, d_delimiter);
 					position = 0;
 
-					while( (location = key.find(delimiter, position)) != string::npos )
+					while((location = key.find(delimiter, position)) != string::npos)
 					{
 						// location points right at the '"'
-						key.insert(location,  "\\");
+						key.insert(location, "\\");
 						position = (int) location + 2;
 					}
 				}
@@ -235,23 +234,22 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 				{
 					position = 0;
 
-					while( (location = key.find("\t", position)) != string::npos )
+					while((location = key.find('\t', position)) != string::npos)
 					{
 						// location points right at the '"'
-						key.insert(location,  "\\");
+						key.insert(location, "\\");
 						position = (int) location + 2;
 					}
-					
+
 					position = 0;
 
-					while( (location = key.find(" ", position)) != string::npos )
+					while((location = key.find(' ', position)) != string::npos)
 					{
 						// location points right at the '"'
-						key.insert(location,  "\\");
+						key.insert(location, "\\");
 						position = (int) location + 2;
-					}					
-
-				}				
+					}
+				}
 			}
 
 			// print the key
@@ -265,7 +263,7 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 		// as a valueless flag, so an empty string did not survive leaving
 		// rudeconfig.
 		//
-		*d_outputstream  << " " << ( d_delimiter ? d_delimiter : '\t' ) << " ";
+		*d_outputstream << " " << (d_delimiter ? d_delimiter : '\t') << " ";
 
 		if(value != "")
 		{
@@ -274,24 +272,24 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 
 			// escape all backslashes
 			//
-			string backslash(1,'\\');
+			string backslash(1, '\\');
 
-			while( (location = value.find("\\", position)) != string::npos )
+			while((location = value.find('\\', position)) != string::npos)
 			{
 				// location points right at the '\'
-				value.insert(location,  "\\");
+				value.insert(location, "\\");
 				position = (int) location + 2;
 			}
 
 			// escape all quotes
 			//
-			string quote(1,'"');
+			string quote(1, '"');
 			position = 0;
 
-			while( (location = value.find("\"", position)) != string::npos )
+			while((location = value.find('\"', position)) != string::npos)
 			{
 				// location points right at the '"'
-				value.insert(location,  "\\");
+				value.insert(location, "\\");
 				position = (int) location + 2;
 			}
 
@@ -302,28 +300,25 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 			{
 				position = 0;
 
-				while( (location = value.find(commentchar, position)) != string::npos )
+				while((location = value.find(commentchar, position)) != string::npos)
 				{
 					// location points right at the '"'
-					value.insert(location,  "\\");
+					value.insert(location, "\\");
 					position = (int) location + 2;
 				}
 			}
 
 
 
-
-
-			// if value starts with whitespace, ends with whitespace or contains the comment character or CRLF's, quote the value, 
+			// if value starts with whitespace, ends with whitespace or contains the comment character or CRLF's, quote the value,
 			//
 			int size = value.size();
 
-			if(		isspace(value[0]) || 
-						isspace(value[size-1]) || 
-						(value.find("\r", 0) != string::npos) || 
-						(value.find("\f", 0) != string::npos) || 
-						(value.find("\n", 0)!= string::npos) 
-			)
+			if(isspace(value[0]) ||
+			   isspace(value[size - 1]) ||
+			   (value.find('\r', 0) != string::npos) ||
+			   (value.find('\f', 0) != string::npos) ||
+			   (value.find('\n', 0) != string::npos))
 			{
 
 
@@ -335,47 +330,44 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 			// then each line must start with a comment character.
 			// The safest way is just to follow every newline character with a comment
 			//
-			if(		dataline.isDeleted() && ( 
-						(value.find("\r", 0) != string::npos) || 
-						(value.find("\f", 0) != string::npos) || 
-						(value.find("\n", 0)!= string::npos) )
-			  )
-			{	
-				position = 0;				
+			if(dataline.isDeleted() && ((value.find('\r', 0) != string::npos) ||
+										(value.find('\f', 0) != string::npos) ||
+										(value.find('\n', 0) != string::npos)))
+			{
+				position = 0;
 
-				while( (location = value.find("\r", position)) != string::npos )
+				while((location = value.find('\r', position)) != string::npos)
 				{
 					// location points right at the '"'
-					value.insert(location + 1,  commentchar);
+					value.insert(location + 1, commentchar);
 					position = (int) location + 2;
 				}
-				position = 0;				
-				while( (location = value.find("\f", position)) != string::npos )
+				position = 0;
+				while((location = value.find('\f', position)) != string::npos)
 				{
 					// location points right at the '"'
-					value.insert(location + 1,  commentchar);
+					value.insert(location + 1, commentchar);
 					position = (int) location + 2;
 				}
 
-				position = 0;				
-				while( (location = value.find("\n", position)) != string::npos )
+				position = 0;
+				while((location = value.find('\n', position)) != string::npos)
 				{
 					// location points right at the '"'
-					value.insert(location + 1,  commentchar);
+					value.insert(location + 1, commentchar);
 					position = (int) location + 2;
 				}
-			}			
+			}
 
 			*d_outputstream << value;
-
 		}
 
-		if( comment != "" && d_commentchar && d_preservecomments)
+		if(comment != "" && d_commentchar && d_preservecomments)
 		{
 			// add value's comment at end if it exists
 			// and there is a comment character
 			//
-					*d_outputstream << "\t " << d_commentchar << comment;
+			*d_outputstream << "\t " << d_commentchar << comment;
 		}
 
 		// end the entry with a newline
@@ -385,5 +377,5 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 }
 
 
-}} // end namespaces
-
+} // namespace config
+} // namespace rude

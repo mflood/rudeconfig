@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -28,8 +28,10 @@
 #include "AbstractWriter.h"
 #include <iostream>
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 class File;
 class Section;
@@ -38,69 +40,67 @@ class Comment;
 class WhiteSpace;
 
 
-class Writer: public AbstractWriter{
+class Writer : public AbstractWriter
+{
 
-public:
-
+  public:
 	Writer();
-		
-	virtual void visitFile(const File& configfile) const;
-	virtual void visitSection(const Section& configsection) const;
-	virtual void visitKeyValue(const KeyValue& keyvalue) const;
-	virtual void visitComment(const Comment& comment) const;
-	virtual void visitWhiteSpace(const WhiteSpace& whitespace) const;
+
+	virtual void visitFile(const File &configfile) const;
+	virtual void visitSection(const Section &configsection) const;
+	virtual void visitKeyValue(const KeyValue &keyvalue) const;
+	virtual void visitComment(const Comment &comment) const;
+	virtual void visitWhiteSpace(const WhiteSpace &whitespace) const;
 
 	virtual ~Writer();
 
 	//=
 	// Writes the data member to an output stream
-	// 
+	//
 	// For the following specification examples, assume an object with the following properties:
-	// 
+	//
 	// <b>name</b> = "color"
 	// <b>value</b>="blue"
 	// <b>comment</b>="Color of the background"
-	// 
+	//
 	// <ul>
 	// <li>If comment char is null, comments/deleted items will not be written
-	// 
+	//
 	// <b>Example:</b> object->write(stdout, 0, "=")
 	// <b>Results:</b>
-	// <font color=red><code>color = blue</code></font>	 
-	// 
+	// <font color=red><code>color = blue</code></font>
+	//
 	// <li>If delimiter is null, name / value will be separated by whitespace
-	// 
+	//
 	// <b>Example:</b> object->write(stdout, "#", 0)
 	// <b>Results:</b>
-	// <font color=red><code>color  blue  # Color of the background</code></font>	 
-	// 
+	// <font color=red><code>color  blue  # Color of the background</code></font>
+	//
 	// <li>Undefined results if outputstream is null
-	// 
+	//
 	// <b>Example:</b> object->write(0, "#", "=")
 	// <b>Results:</b>
-	// <font color=red><code>??????????</code></font>	 
-	// 
+	// <font color=red><code>??????????</code></font>
+	//
 	// <li>If the data member is a comment, then only the comment data is written - any values
 	// for the name / value are discarded.
-	// 
+	//
 	// <b>Example:</b> object->write(stdout, "#", "=")
 	// <b>Results:</b>
-	// <font color=red><code># Color of the background</code></font>	 
-	// 
-	// <li>If the data member has been (flagged as) deleted, then the name, value and original comment are preserved, 
+	// <font color=red><code># Color of the background</code></font>
+	//
+	// <li>If the data member has been (flagged as) deleted, then the name, value and original comment are preserved,
 	// preceded by a comment character.
-	// 
+	//
 	// <b>Example:</b> object->write(stdout, "#", "=")
 	// <b>Results:</b>
-	// <font color=red><code># color = blue  # Color of the background</code></font>	 
-	// 
+	// <font color=red><code># color = blue  # Color of the background</code></font>
+	//
 	// </ul>
 	//=
-
-
 };
 
-}} // end namespaces
+} // namespace config
+} // namespace rude
 
 #endif
-

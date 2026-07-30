@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -46,25 +46,27 @@
 
 using namespace rude::config;
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 class Section;
 
-class File: public AbstractData{
+class File : public AbstractData
+{
 
-private:
+  private:
 	Section *d_currentSection;
-	mutable std::vector<Section*> d_sections;
-	mutable std::map<std::string, Section*> d_sectionmap;
+	mutable std::vector<Section *> d_sections;
+	mutable std::map<std::string, Section *> d_sectionmap;
 
-public:
-
+  public:
 	File();
 	~File();
-	void acceptWriter(AbstractWriter& writer) const;
+	void acceptWriter(AbstractWriter &writer) const;
 	void clear();
-	const char * getStringValue(const char *name) const;
+	const char *getStringValue(const char *name) const;
 	bool deleteData(const char *name);
 	void setStringValue(const char *name, const char *value);
 	int getNumDataMembers() const;
@@ -77,10 +79,9 @@ public:
 	bool deleteSection(const char *sectionname);
 
 	Section *getSection(const char *sectionname);
-
 };
 
-}} // end namespace rude::config
+} // namespace config
+} // namespace rude
 
 #endif
-

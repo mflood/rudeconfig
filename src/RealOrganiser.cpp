@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -33,35 +33,40 @@
 
 using namespace std;
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 RealOrganiser::RealOrganiser(File *file)
 {
 	d_file = file;
 	d_section = d_file->getSection("");
 }
-
+
+
 void RealOrganiser::foundSection(const char *sectionName, const char *comment)
 {
 	d_section = d_file->getSection(sectionName);
 	d_section->setSectionComment(comment);
 }
-	
+
 void RealOrganiser::foundComment(const char *comment)
 {
 	d_section->addComment(comment);
 }
-
+
+
 void RealOrganiser::foundWhiteSpace(const char *whitespace)
 {
 	d_section->addWhiteSpace(whitespace);
 }
-	
+
 void RealOrganiser::foundData(const char *key, const char *value, const char *comment)
 {
 	d_section->setValue(key, value, comment);
 }
-
-}} // end namespaces
-
+
+
+} // namespace config
+} // namespace rude

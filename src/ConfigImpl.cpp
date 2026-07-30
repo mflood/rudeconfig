@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -76,8 +76,10 @@
 
 using namespace std;
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 // STATIC DATA
 //
@@ -88,7 +90,7 @@ char ConfigImpl::s_defaultDelimiter = '=';
 bool ConfigImpl::s_defaultPreserveDeleted = false;
 bool ConfigImpl::s_defaultAllowDuplicate = false;
 bool ConfigImpl::s_defaultIgnoreCase = false;
-std::string ConfigImpl::s_returnValue="";
+std::string ConfigImpl::s_returnValue = "";
 
 
 //////////////////////////////////////
@@ -99,7 +101,7 @@ const char *ConfigImpl::version()
 {
 	return "0";
 }
-	
+
 void ConfigImpl::setDefaultConfigFile(const char *filepath)
 {
 	s_defaultConfigFile = filepath ? filepath : "default.ini";
@@ -236,23 +238,23 @@ const char *ConfigImpl::doubleToString(double value)
 	return s_returnValue.c_str();
 }
 
-char * ConfigImpl::stringToBinary(const char *value, int &outlength)
+char *ConfigImpl::stringToBinary(const char *value, int &outlength)
 {
 	// Base64Encoder USAGE:
 	// static char * decode(const char *data, int datalength, int &outlength);
 
 	if(value)
 	{
-		int datalength=std::strlen(value);
+		int datalength = std::strlen(value);
 		return Base64Encoder::decode(value, datalength, outlength);
 	}
-	outlength=0;
+	outlength = 0;
 	return 0;
 }
 
 const char *ConfigImpl::binaryToString(const char *value, int length)
 {
-	
+
 	// Base64Encoder USAGE:
 	// static char * encode(const char *data, int datalength, int &outlength);
 
@@ -274,34 +276,32 @@ const char *ConfigImpl::binaryToString(const char *value, int length)
 //////////////////////////////////////
 
 
-	///////////////////////////
-	// CONSTRUCTOR & DESTRUCTOR
-	///////////////////////////
+///////////////////////////
+// CONSTRUCTOR & DESTRUCTOR
+///////////////////////////
 
 ConfigImpl::ConfigImpl()
 {
 	d_file = new File();
 
-	// Create the appropriate Objects here, 
+	// Create the appropriate Objects here,
 	// all other methods interact with
 	// the base class interfaces
-	// 
+	//
 	d_writer = new Writer();
-	
+
 	d_parser = new ParserJuly2004();
 
-	d_error="";
-	d_errorcode="";
-	
+	d_error = "";
+	d_errorcode = "";
+
 	d_commentcharacter = s_defaultCommentChar;
 	d_delimiter = s_defaultDelimiter;
 	d_configfile = s_defaultConfigFile;
 	d_preserveDeleted = s_defaultPreserveDeleted;
 	d_allowDuplicate = s_defaultAllowDuplicate;
 	d_ignoreCase = s_defaultIgnoreCase;
-
-
-} 
+}
 
 ConfigImpl::~ConfigImpl()
 {
@@ -310,9 +310,9 @@ ConfigImpl::~ConfigImpl()
 	delete d_file;
 }
 
-	////////////
-	// STATUS
-	////////////
+////////////
+// STATUS
+////////////
 
 void ConfigImpl::setError(const char *errorcode, const char *errorstring)
 {
@@ -330,15 +330,16 @@ const char *ConfigImpl::getErrorCode() const
 	return d_errorcode.c_str();
 }
 
-	//////////////////////
-	// INSTANCE BEHAVIOR
-	//////////////////////
+//////////////////////
+// INSTANCE BEHAVIOR
+//////////////////////
 
 void ConfigImpl::setConfigFile(const char *filepath)
 {
 	d_configfile = filepath ? filepath : s_defaultConfigFile.c_str();
 }
-const char * ConfigImpl::getConfigFile()
+
+const char *ConfigImpl::getConfigFile()
 {
 	return d_configfile.c_str();
 }
@@ -368,9 +369,9 @@ void ConfigImpl::allowDuplicateKeys(bool shouldAllow)
 	d_allowDuplicate = shouldAllow;
 }
 
-	//////////////////////////////
-	// LOADING & SAVING & CLEARING
-	//////////////////////////////
+//////////////////////////////
+// LOADING & SAVING & CLEARING
+//////////////////////////////
 
 bool ConfigImpl::load()
 {
@@ -384,7 +385,7 @@ bool ConfigImpl::load(const char *filepath)
 
 	if(filepath && filepath[0])
 	{
-		d_configfile=filepath;
+		d_configfile = filepath;
 
 		// A directory opens successfully as an ifstream on POSIX; reads
 		// then yield nothing, so load(".") used to report success and
@@ -418,27 +419,27 @@ bool ConfigImpl::load(const char *filepath)
 	}
 }
 
-bool ConfigImpl::load(std::istream& inputstream)
-{	
+bool ConfigImpl::load(std::istream &inputstream)
+{
 	d_parser->setCommentCharacter(d_commentcharacter);
-	
+
 	d_parser->setDelimiter(d_delimiter);
 
 	RealOrganiser organiser(d_file);
-	
+
 	if(d_parser->parse(inputstream, organiser))
 	{
 		setSection("");
 		return true;
 	}
 	else
-	{	
+	{
 		setSection("");
 		setError(d_parser->getErrorCode(), d_parser->getError());
 		return false;
 	}
 }
-	
+
 bool ConfigImpl::save()
 {
 	// forward to save(filepath)
@@ -471,7 +472,7 @@ bool ConfigImpl::save(const char *filepath)
 	}
 }
 
-bool ConfigImpl::save(std::ostream& outstream)
+bool ConfigImpl::save(std::ostream &outstream)
 {
 	d_writer->setOutputStream(outstream);
 	d_writer->setCommentChar(d_commentcharacter);
@@ -489,9 +490,9 @@ void ConfigImpl::clear()
 }
 
 
-	//////////////////
-	// SECTION METHODS
-	//////////////////
+//////////////////
+// SECTION METHODS
+//////////////////
 
 
 int ConfigImpl::getNumSections() const
@@ -519,32 +520,32 @@ bool ConfigImpl::deleteSection(const char *sectionname)
 	return d_file->deleteSection(sectionname);
 }
 
-	////////////////
-	// DATA METHODS
-	////////////////
+////////////////
+// DATA METHODS
+////////////////
 
 
 int ConfigImpl::getNumDataMembers() const
 {
-		return d_file->getNumDataMembers();
+	return d_file->getNumDataMembers();
 }
 
 const char *ConfigImpl::getDataNameAt(int index) const
 {
-		return d_file->getDataNameAt(index);
+	return d_file->getDataNameAt(index);
 }
 
 const char *ConfigImpl::getDataValueAt(int index) const
 {
-		return d_file->getDataValueAt(index);
+	return d_file->getDataValueAt(index);
 }
 
 bool ConfigImpl::exists(const char *name) const
 {
-		return d_file->exists(name);
+	return d_file->exists(name);
 }
-	
-const char * ConfigImpl::getStringValue(const char *name) const
+
+const char *ConfigImpl::getStringValue(const char *name) const
 {
 	return d_file->getStringValue(name);
 }
@@ -559,10 +560,10 @@ bool ConfigImpl::deleteData(const char *name)
 	return d_file->deleteData(name);
 }
 
-	///////////////////////////////
-	// Working with Duplicate Keys
-	// NOT IMPLEMENTED YET
-	///////////////////////////////
+///////////////////////////////
+// Working with Duplicate Keys
+// NOT IMPLEMENTED YET
+///////////////////////////////
 
 int ConfigImpl::getNumDataMembers(const char *key) const
 {
@@ -576,7 +577,7 @@ int ConfigImpl::getNumDataMembers(const char *key) const
 	}
 }
 
-const char * ConfigImpl::getStringValue(const char *name, int /*index*/) const
+const char *ConfigImpl::getStringValue(const char *name, int /*index*/) const
 {
 	return d_file->getStringValue(name);
 }
@@ -591,4 +592,5 @@ bool ConfigImpl::deleteData(const char *name, int /*index*/)
 	return d_file->deleteData(name);
 }
 
-}}// end namespace rude::config
+} // namespace config
+} // namespace rude

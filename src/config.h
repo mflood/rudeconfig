@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -25,37 +25,38 @@
 #ifndef INCLUDED_RUDE_CONFIG_H
 #define INCLUDED_RUDE_CONFIG_H
 
-namespace rude{
+namespace rude
+{
 
-namespace config{
+namespace config
+{
 class ConfigImpl;
 }
 
 //=
 // rude::Config is the public interface for the config/ini file reader.
 //=
-class Config{
+class Config
+{
 
 	// Bridge component
 	//
 	rude::config::ConfigImpl *d_implementation;
 
-public:
-
-
+  public:
 	//=
 	// Default constructor
 	// Use to obtain an instance of the rude::Config component
-	// 
+	//
 	// <b>Example:</b>
 	// <code>
 	// rude::Config myconfig;
-	// 
+	//
 	// //OR
-	// 
+	//
 	// rude::Config *myconfig = new rude::Config();
 	// </code>
-	//= 
+	//=
 	Config();
 
 	//=
@@ -68,12 +69,12 @@ public:
 
 	//=
 	// Returns the release version of the library, for example "6.0.0".
-	// 
+	//
 	// Before 6.0.0 this returned an interface.implementation pair
 	// ("3.0"), which did not identify the release that was linked.
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// <code>const char *version = Config::version();</code>
 	//=
 	static const char *version();
@@ -94,7 +95,7 @@ public:
 	//=
 	// Sets the default comment character to be used by all config objects
 	// The comment character affects how config files are parsed, and how they are written.
-	// Initially, the default comment character is set to '#' 
+	// Initially, the default comment character is set to '#'
 	// This method does not affect already existing instances.
 	//=
 	static void setDefaultCommentCharacter(char c);
@@ -108,7 +109,7 @@ public:
 	//=
 	// Sets the default delimiter character to be used by all config objects
 	// The delimiter affects how config files are parsed, and how they are written.
-	// Initially, the default delimiter is set to '=' 
+	// Initially, the default delimiter is set to '='
 	// This method does not affect already existing instances.
 	//=
 	static void setDefaultDelimiter(char c);
@@ -121,7 +122,7 @@ public:
 
 	//=
 	// Sets the default behavior of all config objects in dealing with deleted values.
-	// The default behavior is for config objects to preserve deleted data as comments when 
+	// The default behavior is for config objects to preserve deleted data as comments when
 	// the config object is saved
 	// This method does not affect already existing instances.
 	//=
@@ -147,11 +148,11 @@ public:
 	// The default filepath is initially set to "./default.ini"
 	// Affects the current instance only
 	//=
-	const char * getConfigFile();
+	const char *getConfigFile();
 
 	//=
 	// Sets whether or not deleted data will be preserved as comments.
-	// If set to true, deleted data will be converted into comments when 
+	// If set to true, deleted data will be converted into comments when
 	// the save() method is called.  If set to false, deleted data
 	// will not be compeltely discarded. Default is false (no preserve).
 	// Affects the current instance only.
@@ -160,7 +161,7 @@ public:
 
 	//=
 	// Set's the comment character ( initially set to '#' )
-	// If the comment character is set to NULL (0), 
+	// If the comment character is set to NULL (0),
 	// then comments will not be written when save() is called
 	// Affects the current object only
 	//=
@@ -175,14 +176,14 @@ public:
 	void setDelimiter(char kayvaluedelimiter);
 
 	//=
-	// 
+	//
 	// When called before load(), saves the configuration to the default config file.
 	// Initially, the default config file is "./default.ini".
-	// 
+	//
 	// If load was called with an argument:
 	//     load(const char *filename)
-	// then save() will use the same filename. 
-	// 
+	// then save() will use the same filename.
+	//
 	// The filename used by the instance can be changed by the setConfigFile() method.
 	//=
 	bool save();
@@ -201,10 +202,10 @@ public:
 	// at the beginning of the configuration file.
 	//=
 	void clear();
-	
+
 	//=
 	// Loads the default file into the configuration object.
-	// By default, the current file is 'default.conf', 
+	// By default, the current file is 'default.conf',
 	// but can be overridden by calling the setConfigFile(const char *filename) method.
 	// This method does not clear the config object before loading.
 	// If you load two or more configuration files that have the same sections,
@@ -219,7 +220,7 @@ public:
 
 	//=
 	// Adds the file's configuration info to the current object.
-	// Does not delete any existing data in the config object. 
+	// Does not delete any existing data in the config object.
 	// The default config file path is not altered...
 	// Use setConfigFile() to permanently set the default config file for load() and save()
 	// This method does not clear the config object before loading.
@@ -235,10 +236,10 @@ public:
 
 	//=
 	// Returns the number of sections in the entire configuration file
-	// This number includes the default section - ""  (the empty section at the beginning of the file) 
+	// This number includes the default section - ""  (the empty section at the beginning of the file)
 	// Sections within the configuration file are identifed by [Square Brackets] surrounding the name of the section.
 	// Whitespace surrounding the section name is ignored. So [   This Section    ] and [This Section] are identical.
-	// Section names <b>are</b> case sensitive.  
+	// Section names <b>are</b> case sensitive.
 	// The default section is the empty section - the unnamed section at the beginning of the file that
 	// exists before any other [named] sections. This section exists even if the first line of the file
 	// contains a [named section].  The empty section will simply be void of any data.
@@ -253,12 +254,12 @@ public:
 	// If the section has no name, but is a valid index, then it will return the empty string ("")
 	//=
 	const char *getSectionNameAt(int index) const;
-	
+
 	//=
 	// Sets the current working [section], possibly creating a new section
-	// The default section is "" (the untitled section at the beginning of the configuration file).  
+	// The default section is "" (the untitled section at the beginning of the configuration file).
 	// If the new section cannot be found, and <b>shouldCreate</b> is <b>true</b>,
-	//  then the section will be created and will exist at the end of all other sections.  
+	//  then the section will be created and will exist at the end of all other sections.
 	// If the new section cannot be found, and <b>shouldCreate</b> is <b>false</b>,
 	//  then the current section remains unchanged, and the method returns false.
 	// Leading and trailing whitespace is not preserved when the file is written,
@@ -286,19 +287,19 @@ public:
 	// Returns the number of data elements for the current section
 	//
 	// <b>Example:</b>
-	// 
+	//
 	// Given the following configuration:
-	// 
+	//
 	//<font color=red>[Good Movies]
 	// The 5th Element
 	// Resevoir Dogs
 	// Braveheart
-	// 
+	//
 	// [Bad Movies]
-	// 
+	//
 	// Freddy Got Fingered
 	// CONfidential
-	// 
+	//
 	// [Body Parts]
 	// arm=2
 	// head=1
@@ -306,11 +307,11 @@ public:
 	// neck=1
 	// ears=2
 	// eyes=2
-	//	
+	//
 	// </font>
 	//
 	// You'll get the following results:
-	// <code> 
+	// <code>
 	// config->setSection("Body Parts", true);
 	// config->getNumDataMembers(); // returns 6
 	//
@@ -325,14 +326,14 @@ public:
 
 	//=
 	// Enumeration method to discover data members within the current section
-	// Returns the name of the data member at 
+	// Returns the name of the data member at
 	// the specified index within the current
 	// section, or NULL if the index is out of range.
 	//
 	// <b>Example:</b>
-	// 
+	//
 	// Given the following configuration:
-	// 
+	//
 	//<font color=red>[Contact Info]
 	// name= Mark Twain
 	// email address = mark@twain
@@ -340,7 +341,7 @@ public:
 	// </font>
 	//
 	// You'll get the following results:
-	// <code> 
+	// <code>
 	// config->setSection("Contact Info");
 	// config->getDataNameAt(0); // returns "name"
 	// config->getDataNameAt(2); // returns "phone"
@@ -351,12 +352,12 @@ public:
 	const char *getDataNameAt(int index) const;
 
 	//=
-	// Returns true if a data member exists with the given 
-	//name within the current section
+	// Returns true if a data member exists with the given
+	// name within the current section
 	//
 	//
 	// &nbsp;<b>Example:</b>
-	// 
+	//
 	// Given the following configuration:
 	//
 	//<font color=red>
@@ -373,25 +374,25 @@ public:
 	// </font>
 	//
 	// You'll get the following results:
-	// <code> 
+	// <code>
 	// config->setSection("Strong Body Parts");
-	// 
+	//
 	// if(config->exists("arm"))
 	// {
 	// 	// yes, arm exists...
 	// }
-	// 
+	//
 	// if(config->exists("belly"))
 	// {
 	// 	// returns false - belly isn't in that section.
 	// }
-	// 
+	//
 	// config->setSection("Weak Body Parts");
-	// 
+	//
 	// if(config->exists("belly"))
 	// {
 	//	// yes! belly is in this section....
- 	// }
+	// }
 	// </code>
 	//=
 	bool exists(const char *name) const;
@@ -410,9 +411,9 @@ public:
 	// Likewise, it will interpret the following as false:
 	// No, no, Off, off, False, false, 0, F, f, N, n
 	//
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// Given the following configuration:
 	//
 	//<font color=red>
@@ -427,9 +428,9 @@ public:
 	// sand = Nope
 	// </font>
 	// You'll get the following results:
-	// <code> 
+	// <code>
 	// config->setSection("Things that are and aren't");
-	// 
+	//
 	// config->getBoolValue("Aliens"); // returns true
 	// config->getBoolValue("carpenter"); // returns false
 	// // etc...
@@ -456,13 +457,13 @@ public:
 	// If the value is quoted, the quotes are removed, and leading and trailing whitespace
 	// within the quotes are preserved.
 	//=
-	const char * getValue(const char *name) const;
+	const char *getValue(const char *name) const;
 
 	//=
 	// Same as <code>const char *getValue(const char *name)</code>
 	// @deprecated
 	//=
-	const char * getStringValue(const char *name) const;
+	const char *getStringValue(const char *name) const;
 
 	//=
 	// Sets the named value within the current section to "true" or "false"
@@ -470,11 +471,11 @@ public:
 	// that the config object expects.
 	// If the value is already set for the data item, the value is changed.
 	// If the value is not already set, it is created
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// To create the following configuration entries:
-	// 
+	//
 	// <font color=red>[On Sale]
 	//	Hard Drives = true
 	// Cases = false
@@ -482,7 +483,7 @@ public:
 	// </font>
 	//
 	// Use this code:
-	// <code> 
+	// <code>
 	// config->setSection("On Sale");
 	// config->setBoolValue("Hard Drives", true);
 	// config->setBoolValue("Cases", false);
@@ -502,19 +503,19 @@ public:
 	// that converts an integer to the expected string value.
 	// If the value is already set for the data item, the value is changed.
 	// If the value is not already set, it is created
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// To create the following configuration entries:
-	// 
+	//
 	// <font color=red>[Inventory]
 	//	Hard Drives = 35
 	// Cases = 24
 	// Keyboards = 103
-	// </font> 
+	// </font>
 	//
 	// Use this code:
-	// <code> 
+	// <code>
 	// config->setSection("Inventory", true);
 	// config->setIntValue("Hard Drives", 35);
 	// config->setIntValue("Cases", 24);
@@ -534,19 +535,19 @@ public:
 	// that converts an integer to a string value to be stored.
 	// If the value is already set for the data item, the value is changed.
 	// If the value is not already set, it is created
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// To create the following configuration entries:
-	// 
+	//
 	// <font color=red>[Prices]
 	//	Hard Drives = 59.95
 	// Cases = 44.00
 	// Keyboards = 12.25
-	// </font> 
+	// </font>
 	//
 	// Use this code:
-	// <code> 
+	// <code>
 	// config->setSection("Prices", true);
 	// config->setDoubleValue("Hard Drives", 59.95);
 	// config->setDoubleValue("Cases", 44.00);
@@ -575,15 +576,15 @@ public:
 	// besides the RudeConfig object.
 	//
 	// Note:  Leading and traling whitespace of the identifying fieldname (the key for the data item) is not preserved.
-	// 
+	//
 	// <b>Example:</b>
-	// 
+	//
 	// To create the following configuration entry:
-	// 
+	//
 	// <font color=red>[travel]<br>Travel Agent = Mary Johnson</font>
-	// 
+	//
 	// Use this code:
-	// <code> 
+	// <code>
 	// config->setSection("travel", true);
 	// config->setStringValue("Travel Agent", "Mary Johnson");
 	// config->save();
@@ -605,9 +606,9 @@ public:
 
 	//=
 	// Deletes the data member identified by <i>name</i> (if it exists) in the current section.
-	// If the configuration object is saved, 
+	// If the configuration object is saved,
 	// then the data member will be preserved by being commented out.
-	// If a new value is later assigned to this 
+	// If a new value is later assigned to this
 	// value (in the lifetime of the instance),
 	// then it becomes undeleted (uncommented).
 	// Values can only be revived this way using the same instance they were deleted with.
@@ -618,10 +619,8 @@ public:
 	bool deleteData(const char *name);
 
 	~Config();
-
 };
 
 } // end namespace rude
 
 #endif
-

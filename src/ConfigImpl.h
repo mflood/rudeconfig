@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -34,8 +34,10 @@
 #define INCLUDED_IOSTREAM
 #endif
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 class Section;
 class File;
@@ -43,7 +45,8 @@ class AbstractWriter;
 class AbstractParser;
 class AbstractOrganiser;
 
-class ConfigImpl{
+class ConfigImpl
+{
 
 	static std::string s_defaultConfigFile;
 	static char s_defaultCommentChar;
@@ -55,7 +58,7 @@ class ConfigImpl{
 
 	AbstractWriter *d_writer;
 	AbstractParser *d_parser;
-	
+
 	File *d_file;
 	std::string d_error;
 	std::string d_errorcode;
@@ -67,28 +70,26 @@ class ConfigImpl{
 	bool d_allowDuplicate;
 	bool d_ignoreCase;
 
-protected:
-
+  protected:
 	void setError(const char *errorcode, const char *errorstring);
 
-public:
-
+  public:
 	//////////////////////////////////////
 	// STATIC METHODS
 	//////////////////////////////////////
 	static const char *version();
-	
+
 	// DEFAULT BEHAVIOR
 	//
 	static void setDefaultConfigFile(const char *filepath);
 	static const char *getDefaultConfigFile();
-			
+
 	static void setDefaultCommentCharacter(char c);
 	static char getDefaultCommentCharacter();
 
 	static void setDefaultDelimiter(char c);
 	static char getDefaultDelimiter();
-	
+
 	static void setDefaultPreserveDeleted(bool shouldPreserve);
 	static bool getDefaultPreserveDeleted();
 
@@ -97,7 +98,7 @@ public:
 	static void setDefaultIgnoreCase(bool shouldIgnore);
 	static void setDefaultAllowDuplicateKeys(bool shouldAllow);
 
-			
+
 	// DATA CONVERSION
 	//
 	static bool stringToBool(const char *string);
@@ -106,8 +107,8 @@ public:
 	static const char *intToString(int value);
 	static double stringToDouble(const char *string);
 	static const char *doubleToString(double value);
-	static char * stringToBinary(const char *value, int &outlength);
-	static const char *binaryToString(const char *value, int length); 
+	static char *stringToBinary(const char *value, int &outlength);
+	static const char *binaryToString(const char *value, int length);
 
 
 	//////////////////////////////////////
@@ -135,14 +136,14 @@ public:
 	void allowDuplicateKeys(bool shouldAllow);
 
 	// LOADING & SAVING & CLEARING
-	//	
+	//
 	bool load();
 	bool load(const char *filepath);
-	bool load(std::istream&);
-	
+	bool load(std::istream &);
+
 	bool save();
 	bool save(const char *filepath);
-	bool save(std::ostream&);
+	bool save(std::ostream &);
 
 	void clear();
 
@@ -162,21 +163,18 @@ public:
 	const char *getDataNameAt(int index) const;
 	const char *getDataValueAt(int index) const;
 	bool exists(const char *name) const;
-	
-	const char * getStringValue(const char *name) const;
+
+	const char *getStringValue(const char *name) const;
 	void setStringValue(const char *name, const char *value);
 	bool deleteData(const char *name);
 
 	// Working with Duplicate Keys
 	//
 	int getNumDataMembers(const char *key) const;
-	const char * getStringValue(const char *name, int index) const;
+	const char *getStringValue(const char *name, int index) const;
 	void addStringValue(const char *name, const char *value);
 	bool deleteData(const char *name, int index);
-
-
-
 };
-}} // end namespace rude::config
+} // namespace config
+} // namespace rude
 #endif
-
