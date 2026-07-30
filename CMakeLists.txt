@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(rudeconfig
-    VERSION 6.0.0
+    VERSION 6.0.1
     DESCRIPTION "C++ library for reading and writing configuration/.ini files"
     HOMEPAGE_URL "https://github.com/mflood/rudeconfig"
     LANGUAGES CXX)

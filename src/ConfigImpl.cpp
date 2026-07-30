@@ -63,6 +63,7 @@
 #endif
 
 #ifndef INCLUDED_FSTREAM
+#include <filesystem>
 #include <fstream>
 #define INCLUDED_FSTREAM
 #endif
@@ -384,6 +385,18 @@ bool ConfigImpl::load(const char *filepath)
 	if(filepath && filepath[0])
 	{
 		d_configfile=filepath;
+
+		// A directory opens successfully as an ifstream on POSIX; reads
+		// then yield nothing, so load(".") used to report success and
+		// leave the caller with a silently empty configuration.
+		//
+		std::error_code ec;
+		if(std::filesystem::is_directory(filepath, ec))
+		{
+			setError("2003", "Config file path is a directory");
+			return false;
+		}
+
 		std::ifstream infile(filepath);
 
 		if(infile)
