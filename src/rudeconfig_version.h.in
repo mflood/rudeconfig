@@ -1,0 +1,7 @@
+// Generated from rudeconfig_version.h.in by CMake -- do not edit.
+#ifndef INCLUDED_RUDECONFIG_VERSION_H
+#define INCLUDED_RUDECONFIG_VERSION_H
+
+#define RUDECONFIG_VERSION_STRING "@PROJECT_VERSION@"
+
+#endif

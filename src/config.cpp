@@ -23,6 +23,8 @@
 
 #include "config.h"
 
+#include "rudeconfig_version.h"
+
 #ifndef INCLUDED_RUDE_CONFIGIMPL_H
 #include "ConfigImpl.h"
 #endif
@@ -47,9 +49,11 @@ namespace rude{
 
 const char *Config::version()
 {
-	static std::string ver="3.";
-	ver += ConfigImpl::version();
-	return ver.c_str();
+	// As of 6.0.0 this reports the release version of the library.
+	// It previously reported an interface.implementation pair ("3.0"),
+	// which told callers nothing about which release they had linked.
+	//
+	return RUDECONFIG_VERSION_STRING;
 }
 	
 	void Config::setDefaultConfigFile(const char *filepath)
