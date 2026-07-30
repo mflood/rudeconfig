@@ -64,7 +64,7 @@ void ParserJuly2004::stripTrailing(std::string& buffer)
 	{
 		char c = buffer[x];
 
-		if (isspace(c))
+		if (isspace(static_cast<unsigned char>(c)))
 		{
 			buffer.erase(x);
 		}
@@ -76,18 +76,18 @@ void ParserJuly2004::stripTrailing(std::string& buffer)
 }
 
 
-bool ParserJuly2004::isEOL(char c)
+bool ParserJuly2004::isEOL(int c)
 {
 	return (c == '\r' || c == '\f' || c == '\n');
 }
 
 bool ParserJuly2004::chompEOL(std::istream& inputstream)
 {
-		char c = inputstream.peek();
+		int c = inputstream.peek();
 		if(isEOL(c))
 		{
 			inputstream.get();
-			char next_c = inputstream.peek();
+			int next_c = inputstream.peek();
 			if( (c != next_c) && isEOL(next_c) )
 			{
 				inputstream.get();
@@ -110,7 +110,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 		return false;
 	}
 	
-	register char c;
+	int c;
 		
 	// eof only gets set when error_flag is set on previous operation
 	// as such, you need to peek() at the end ot the while loop
@@ -142,7 +142,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			//
 			infile.get();
 				
-			register SectionState sectionState = STARTSECTION;
+			SectionState sectionState = STARTSECTION;
 
 			std::string sectionID = "";
 			std::string comment = "";
@@ -313,6 +313,10 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 						sectionState = ENDSECTION;
 						break;
 					}
+					case ENDSECTION:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -329,7 +333,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			while(infile.good())
 			{
 				c=infile.get();
-				if( isEOL(c))
+				if( c == EOF || isEOL(c))
 				{
 					break;
 				}
@@ -345,7 +349,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 		}
 		else
 		{
-			register KeyValueState kvState = KEY;
+			KeyValueState kvState = KEY;
 			std::string key = "";
 			std::string value = "";
 			std::string comment = "";
@@ -357,7 +361,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 				{
 					case KEY:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 							
 							if(c == EOF || isEOL(c))
 							{
@@ -406,7 +410,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case KEYESCAPE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 							if(c == EOF)
 							{
 								setError("107", "End of stream found after un-escaped backslash");
@@ -429,7 +433,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case STARTVALUE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 
 							if(c == EOF || isEOL(c))
 							{
@@ -463,7 +467,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case FINDCOMMENT:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 
 							if(c == EOF || isEOL(c))
 							{
@@ -494,7 +498,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case COMMENT:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 
 							if(c == EOF || isEOL(c))
 							{
@@ -513,7 +517,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case VALUE:
 					{
-						char c = infile.peek();
+						int c = infile.peek();
 						if(c == '"')
 						{
 							// discard '"'
@@ -530,7 +534,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case QUOTEVALUE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 							if(c == EOF)
 							{
 								setError("106", "End of stream found before final quote (\") in value");
@@ -564,7 +568,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case QUOTEESCAPE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 							if(c == EOF)
 							{
 								setError("107", "End of stream found after un-escaped backslash");
@@ -582,7 +586,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case NONQUOTEVALUE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 
 							if(c == EOF || isEOL(c))
 							{
@@ -620,7 +624,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case NONQUOTEESCAPE:
 					{
-							char c = infile.peek();
+							int c = infile.peek();
 							if(c == EOF)
 							{
 								setError("107", "End of stream found after un-escaped backslash");
@@ -638,7 +642,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 								// if c is newline and next character is also newline, 
 								// we keep both of them if they are different forms of newline
 								// 
-								char next_c = infile.peek();
+												int next_c = infile.peek();
 								if(isEOL(c) && isEOL(next_c) && (c != next_c))
 								{
 									value += infile.get();
@@ -655,6 +659,10 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 							organiser.foundData(key.c_str(), value.c_str(), comment.c_str());
 
 							kvState = ENDKEYVALUE;
+							break;
+					}
+					case ENDKEYVALUE:
+					{
 							break;
 					}
 				} // end switch
