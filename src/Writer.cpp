@@ -259,12 +259,16 @@ void Writer::visitKeyValue(const KeyValue& dataline) const
 			*d_outputstream << key;
 		}
 
+		// Always write the delimiter, even when the value is empty.
+		// Emitting a bare "key" round-tripped through this library, but
+		// other ini readers treat a line with no delimiter as malformed or
+		// as a valueless flag, so an empty string did not survive leaving
+		// rudeconfig.
+		//
+		*d_outputstream  << " " << ( d_delimiter ? d_delimiter : '\t' ) << " ";
+
 		if(value != "")
 		{
-			// print out the delimiter
-			//
-			*d_outputstream  << " " << ( d_delimiter ? d_delimiter : '\t' ) << " ";
-
 			int position = 0;
 			size_t location;
 

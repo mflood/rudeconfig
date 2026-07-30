@@ -3,6 +3,19 @@ See ChangeLog for more detailed information on internal changes
 See the end for copying conditions.
 
 _______________________________________________________________________________
+Release 6.0.1 - Matthew Flood 2026-07-30
+
+	- An empty value is now written with its delimiter ("key = ") rather
+	  than as a bare "key".  The bare form reloaded correctly through
+	  this library, so it looked harmless, but other ini readers treat a
+	  line with no delimiter as malformed or as a valueless flag - so an
+	  empty string did not survive leaving rudeconfig.
+	- load() now fails when given a directory.  A directory opens
+	  successfully as an ifstream on POSIX and then reads as empty, so
+	  load(".") returned true and handed back a silently empty
+	  configuration with no error set.
+
+_______________________________________________________________________________
 Release 6.0.0 - Matthew Flood 2026-07-30
 
 	- MAJOR VERSION BUMP: rude::Config is no longer copyable (see below).
