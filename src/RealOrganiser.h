@@ -9,49 +9,57 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // 02110-1301, USA.
 //------------------------------------------------------------------------
-
+
+
 #ifndef INPUT_RealOrganiser_h
 #define INPUT_RealOrganiser_h
-
+
+
 #include "AbstractOrganiser.h"
-
+
+
 #include <string>
-
-namespace rude{
-namespace config{
-
+
+
+namespace rude
+{
+namespace config
+{
+
+
 class File;
 class Section;
-
-class RealOrganiser: public AbstractOrganiser
+
+
+class RealOrganiser : public AbstractOrganiser
 {
 	File *d_file;
 	Section *d_section;
-	
-public:
-
-	RealOrganiser(File*);
-
+
+  public:
+	RealOrganiser(File *);
+
+
 	virtual void foundSection(const char *sectionName, const char *comment);
 	virtual void foundComment(const char *comment);
 	virtual void foundWhiteSpace(const char *whitespace);
 	virtual void foundData(const char *key, const char *value, const char *comment);
-	
-
 };
-
-}} // end namespaces
-
+
+
+} // namespace config
+} // namespace rude
+
+
 #endif
-

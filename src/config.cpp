@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -41,7 +41,8 @@
 
 using namespace rude::config;
 
-namespace rude{
+namespace rude
+{
 
 //////////////////////////////////////////
 // STATIC Methods
@@ -55,46 +56,46 @@ const char *Config::version()
 	//
 	return RUDECONFIG_VERSION_STRING;
 }
-	
-	void Config::setDefaultConfigFile(const char *filepath)
-	{
-		ConfigImpl::setDefaultConfigFile(filepath);
-	}
 
-	const char *Config::getDefaultConfigFile()
-	{
-		return ConfigImpl::getDefaultConfigFile();
-	}
+void Config::setDefaultConfigFile(const char *filepath)
+{
+	ConfigImpl::setDefaultConfigFile(filepath);
+}
 
-	void Config::setDefaultCommentCharacter(char c)
-	{
-		ConfigImpl::setDefaultCommentCharacter(c);
-	}
+const char *Config::getDefaultConfigFile()
+{
+	return ConfigImpl::getDefaultConfigFile();
+}
 
-	char Config::getDefaultCommentCharacter()
-	{
-		return ConfigImpl::getDefaultCommentCharacter();
-	}
+void Config::setDefaultCommentCharacter(char c)
+{
+	ConfigImpl::setDefaultCommentCharacter(c);
+}
 
-	void Config::setDefaultDelimiter(char c)
-	{
-		ConfigImpl::setDefaultDelimiter(c);
-	}
+char Config::getDefaultCommentCharacter()
+{
+	return ConfigImpl::getDefaultCommentCharacter();
+}
 
-	char Config::getDefaultDelimiter()
-	{
-		return ConfigImpl::getDefaultDelimiter();
-	}
+void Config::setDefaultDelimiter(char c)
+{
+	ConfigImpl::setDefaultDelimiter(c);
+}
 
-	void Config::setDefaultPreserveDeleted(bool shouldPreserve)
-	{
-		ConfigImpl::setDefaultPreserveDeleted(shouldPreserve);
-	}
+char Config::getDefaultDelimiter()
+{
+	return ConfigImpl::getDefaultDelimiter();
+}
 
-	bool Config::getDefaultPreserveDeleted()
-	{
-		return ConfigImpl::getDefaultPreserveDeleted();
-	}
+void Config::setDefaultPreserveDeleted(bool shouldPreserve)
+{
+	ConfigImpl::setDefaultPreserveDeleted(shouldPreserve);
+}
+
+bool Config::getDefaultPreserveDeleted()
+{
+	return ConfigImpl::getDefaultPreserveDeleted();
+}
 
 //////////////////////////////////////////
 // INSTANCE Methods
@@ -116,7 +117,7 @@ void Config::setConfigFile(const char *filepath)
 	d_implementation->setConfigFile(filepath);
 }
 
-const char * Config::getConfigFile()
+const char *Config::getConfigFile()
 {
 	return d_implementation->getConfigFile();
 }
@@ -218,14 +219,14 @@ bool Config::exists(const char *name) const
 
 void Config::setBoolValue(const char *name, bool value)
 {
-		d_implementation->setStringValue(name, ConfigImpl::boolToString(value));
+	d_implementation->setStringValue(name, ConfigImpl::boolToString(value));
 	// d_implementation->setBoolValue(name, value);
 }
 
 bool Config::getBoolValue(const char *name) const
 {
 	return ConfigImpl::stringToBool(d_implementation->getStringValue(name));
-	//return d_implementation->getBoolValue(name);
+	// return d_implementation->getBoolValue(name);
 }
 
 void Config::setIntValue(const char *name, int value)
@@ -237,7 +238,7 @@ void Config::setIntValue(const char *name, int value)
 int Config::getIntValue(const char *name) const
 {
 	return ConfigImpl::stringToInt(d_implementation->getStringValue(name));
-	//return d_implementation->getIntValue(name);
+	// return d_implementation->getIntValue(name);
 }
 
 void Config::setDoubleValue(const char *name, double value)
@@ -249,7 +250,7 @@ void Config::setDoubleValue(const char *name, double value)
 double Config::getDoubleValue(const char *name) const
 {
 	return ConfigImpl::stringToDouble(d_implementation->getStringValue(name));
-	//return d_implementation->getDoubleValue(name);
+	// return d_implementation->getDoubleValue(name);
 }
 
 void Config::setStringValue(const char *name, const char *value)
@@ -257,7 +258,7 @@ void Config::setStringValue(const char *name, const char *value)
 	d_implementation->setStringValue(name, value);
 }
 
-const char * Config::getStringValue(const char *name) const
+const char *Config::getStringValue(const char *name) const
 {
 	return d_implementation->getStringValue(name);
 }
@@ -267,7 +268,7 @@ void Config::setValue(const char *name, const char *value)
 	d_implementation->setStringValue(name, value);
 }
 
-const char * Config::getValue(const char *name) const
+const char *Config::getValue(const char *name) const
 {
 	return d_implementation->getStringValue(name);
 }

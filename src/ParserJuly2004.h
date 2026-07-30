@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -38,25 +38,24 @@
 #define INCLUDED_STRING
 #endif
 
-namespace rude{
-namespace config{
-
-class ParserJuly2004: public AbstractParser
+namespace rude
 {
-	
-protected:
+namespace config
+{
 
-	void stripTrailing(std::string&);
+class ParserJuly2004 : public AbstractParser
+{
+
+  protected:
+	void stripTrailing(std::string &);
 	inline bool isEOL(int c);
-	inline bool chompEOL(std::istream& inputstream);
-	
-public:
-	
-	bool parse(std::istream& inputstream, AbstractOrganiser& organiser);
+	inline bool chompEOL(std::istream &inputstream);
 
+  public:
+	bool parse(std::istream &inputstream, AbstractOrganiser &organiser);
 };
 
-}} // end namespaces
+} // namespace config
+} // namespace rude
 
 #endif
-

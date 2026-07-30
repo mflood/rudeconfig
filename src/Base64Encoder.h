@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -25,40 +25,40 @@
 #define INCLUDED_BASE64ENCODER_H
 
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
-class Base64Encoder{
+class Base64Encoder
+{
 
-private:
-      static char c_encode(char uc);
-      static unsigned char c_decode(char c);
-      static bool IsBase64(char c);
+  private:
+	static char c_encode(char uc);
+	static unsigned char c_decode(char c);
+	static bool IsBase64(char c);
 
-public:
+  public:
+	// datalength does not need to include the NULL terminator for strings
+	//
+	// a NULL terminator is appended to result to make it string friendly
+	// but outlength does not include the
+	// appended NULL terminator in length calculation
+	//
+	// CALLER RESPONSIBLE FOR DELETING RETURNED char * if it is not NULL.
+	//
+	static char *encode(const char *data, int datalength, int &outlength);
 
-		// datalength does not need to include the NULL terminator for strings
-		//
-		// a NULL terminator is appended to result to make it string friendly
-		// but outlength does not include the
-		// appended NULL terminator in length calculation
-		//
-		// CALLER RESPONSIBLE FOR DELETING RETURNED char * if it is not NULL.
-		//
-		static char * encode(const char *data, int datalength, int &outlength);
 
-
-		// datalength does not need to include the NULL terminator for strings
-		// NULL Terminator is appended to result, but outlength does not include the
-		// appended NULL terminator in length calculation
-		//
-		// CALLER RESPONSIBLE FOR DELETING RETURNED char * if it is not NULL.
-		//
-		static char * decode(const char *data, int datalength, int &outlength);
-
+	// datalength does not need to include the NULL terminator for strings
+	// NULL Terminator is appended to result, but outlength does not include the
+	// appended NULL terminator in length calculation
+	//
+	// CALLER RESPONSIBLE FOR DELETING RETURNED char * if it is not NULL.
+	//
+	static char *decode(const char *data, int datalength, int &outlength);
 };
-}}
+} // namespace config
+} // namespace rude
 
 #endif
-
-

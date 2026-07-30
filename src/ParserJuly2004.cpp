@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -50,21 +50,49 @@
 using namespace rude::config;
 using namespace std;
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
-enum SectionState{ STARTSECTION, SECTIONID, ESCAPEID, ENDSECTIONID, SECTIONCOMMENT, FOUNDIDONLY, FOUNDIDCOMMENT, SECTIONERROR, ENDSECTION };
-enum KeyValueState{ KEY, KEYESCAPE, STARTVALUE, COMMENT, FINDCOMMENT, KVERROR, ENDKV, VALUE, QUOTEVALUE, NONQUOTEVALUE, QUOTEESCAPE, NONQUOTEESCAPE, ENDKEYVALUE};
+enum SectionState
+{
+	STARTSECTION,
+	SECTIONID,
+	ESCAPEID,
+	ENDSECTIONID,
+	SECTIONCOMMENT,
+	FOUNDIDONLY,
+	FOUNDIDCOMMENT,
+	SECTIONERROR,
+	ENDSECTION
+};
+enum KeyValueState
+{
+	KEY,
+	KEYESCAPE,
+	STARTVALUE,
+	COMMENT,
+	FINDCOMMENT,
+	KVERROR,
+	ENDKV,
+	VALUE,
+	QUOTEVALUE,
+	NONQUOTEVALUE,
+	QUOTEESCAPE,
+	NONQUOTEESCAPE,
+	ENDKEYVALUE
+};
 
-void ParserJuly2004::stripTrailing(std::string& buffer)
+void ParserJuly2004::stripTrailing(std::string &buffer)
 {
 	int bufferLength = buffer.size();
 
-	for (int x = bufferLength - 1; x >= 0; x--)
+	for(int x = bufferLength - 1; x >= 0; x--)
 	{
 		char c = buffer[x];
 
-		if (isspace(static_cast<unsigned char>(c)))
+		if(isspace(static_cast<unsigned char>(c)))
 		{
 			buffer.erase(x);
 		}
@@ -81,44 +109,44 @@ bool ParserJuly2004::isEOL(int c)
 	return (c == '\r' || c == '\f' || c == '\n');
 }
 
-bool ParserJuly2004::chompEOL(std::istream& inputstream)
+bool ParserJuly2004::chompEOL(std::istream &inputstream)
 {
-		int c = inputstream.peek();
-		if(isEOL(c))
+	int c = inputstream.peek();
+	if(isEOL(c))
+	{
+		inputstream.get();
+		int next_c = inputstream.peek();
+		if((c != next_c) && isEOL(next_c))
 		{
 			inputstream.get();
-			int next_c = inputstream.peek();
-			if( (c != next_c) && isEOL(next_c) )
-			{
-				inputstream.get();
-			}
 		}
-		return true;
+	}
+	return true;
 }
 
-bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
+bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 {
-	if (d_delimiter == '\\' || isEOL(d_delimiter) || d_delimiter == d_commentchar || d_delimiter == '[')
+	if(d_delimiter == '\\' || isEOL(d_delimiter) || d_delimiter == d_commentchar || d_delimiter == '[')
 	{
 		setError("110", "Illegal delimiter.");
 		return false;
 	}
 
-	if (d_commentchar == '\\' || d_commentchar == '"' || isspace(d_commentchar))
+	if(d_commentchar == '\\' || d_commentchar == '"' || isspace(d_commentchar))
 	{
 		setError("111", "Illegal comment character.");
 		return false;
 	}
-	
+
 	int c;
-		
+
 	// eof only gets set when error_flag is set on previous operation
 	// as such, you need to peek() at the end ot the while loop
 	// in order for eof to happen when you want it to!!
 	// one peek() triggers infile.eof(), but it does not reveal it!!!!
 	// you gotta call peek() twice.
 	//
-	while( (c = infile.peek()) != EOF)
+	while((c = infile.peek()) != EOF)
 	{
 		// We're looking for:
 		// '[' beggining of section
@@ -141,159 +169,159 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			// discard '[' character
 			//
 			infile.get();
-				
+
 			SectionState sectionState = STARTSECTION;
 
 			std::string sectionID = "";
 			std::string comment = "";
-				
-			while (sectionState != ENDSECTION)
-			{						
-				switch (sectionState)
+
+			while(sectionState != ENDSECTION)
+			{
+				switch(sectionState)
 				{
 					case STARTSECTION:
 					{
-							c = infile.peek();
-							if(c == EOF)
-							{
-								setError("102", "End of stream found before section ID");
-								sectionState = SECTIONERROR;
-							}
-							else if(isEOL(c))
-							{
-								setError("101", "End of line found before section ID");
-								sectionState = SECTIONERROR;								
-							}
-							else if(c == ' ' || c == '\t')
-							{
-								// discard whitespace
-								//
-								infile.get();
-									
-								// LOOP
-							}
-							else if(c == ']')
-							{
-								// discard ']'
-								//
-								infile.get();
-								
-								sectionState = ENDSECTIONID;
-							}
-							else
-							{
-								sectionState = SECTIONID;
-							}
-							break;
+						c = infile.peek();
+						if(c == EOF)
+						{
+							setError("102", "End of stream found before section ID");
+							sectionState = SECTIONERROR;
+						}
+						else if(isEOL(c))
+						{
+							setError("101", "End of line found before section ID");
+							sectionState = SECTIONERROR;
+						}
+						else if(c == ' ' || c == '\t')
+						{
+							// discard whitespace
+							//
+							infile.get();
+
+							// LOOP
+						}
+						else if(c == ']')
+						{
+							// discard ']'
+							//
+							infile.get();
+
+							sectionState = ENDSECTIONID;
+						}
+						else
+						{
+							sectionState = SECTIONID;
+						}
+						break;
 					}
 					case SECTIONID:
 					{
-							c = infile.peek();
-							if(c == EOF)
-							{
-								setError("104", "End of stream found before end-of-section marker");
-								sectionState = SECTIONERROR;
-							}
-							else if(isEOL(c))
-							{
-								setError("103", "End of line found before end-of-section marker");
-								sectionState = SECTIONERROR;								
-							}
-							else if(c == '\\')
-							{
-								// discard backslash
-								//
-								infile.get();
+						c = infile.peek();
+						if(c == EOF)
+						{
+							setError("104", "End of stream found before end-of-section marker");
+							sectionState = SECTIONERROR;
+						}
+						else if(isEOL(c))
+						{
+							setError("103", "End of line found before end-of-section marker");
+							sectionState = SECTIONERROR;
+						}
+						else if(c == '\\')
+						{
+							// discard backslash
+							//
+							infile.get();
 
-								sectionState = ESCAPEID;
-							}
-							else if(c == ']')
-							{
-								// discard ']'
-								//
-								infile.get();
+							sectionState = ESCAPEID;
+						}
+						else if(c == ']')
+						{
+							// discard ']'
+							//
+							infile.get();
 
-								// Strip Trailing Whitespace from ID
-								//
-								stripTrailing(sectionID);
-									
-								sectionState = ENDSECTIONID;
-							}
-							else
-							{
-								sectionID += infile.get();
+							// Strip Trailing Whitespace from ID
+							//
+							stripTrailing(sectionID);
 
-								// LOOP
-							}
-							break;
+							sectionState = ENDSECTIONID;
+						}
+						else
+						{
+							sectionID += infile.get();
+
+							// LOOP
+						}
+						break;
 					}
 					case ESCAPEID:
 					{
-							c = infile.peek();
-							if(c == EOF)
-							{
-								setError("107", "End of stream found after un-escaped backslash");
-								sectionState = SECTIONERROR;
-							}
-							else if(isEOL(c))
-							{
-								setError("108", "Escaped new-line is not allowed in section ID or key");
-								sectionState = SECTIONERROR;
-							}
-							else
-							{
-								sectionID += infile.get();
-								sectionState = SECTIONID;
-							}
-							break;
+						c = infile.peek();
+						if(c == EOF)
+						{
+							setError("107", "End of stream found after un-escaped backslash");
+							sectionState = SECTIONERROR;
+						}
+						else if(isEOL(c))
+						{
+							setError("108", "Escaped new-line is not allowed in section ID or key");
+							sectionState = SECTIONERROR;
+						}
+						else
+						{
+							sectionID += infile.get();
+							sectionState = SECTIONID;
+						}
+						break;
 					}
 					case ENDSECTIONID:
 					{
-							c = infile.peek();
-							if(c == EOF || isEOL(c))
-							{
-								sectionState = FOUNDIDONLY;				
-							}
-							else if(d_commentchar != 0 && c == d_commentchar)
-							{
-								// discard '#'
-								//
-								infile.get();
-									
-								sectionState = SECTIONCOMMENT;								
-							}
-							else if(c == ' ' || c == '\t')
-							{
-								// discard whitespace
-								//
-								infile.get();
-									
-								// LOOP
-							}
-							else
-							{
-								setError("105", "Illegal character found after end-of-section marker");
-								sectionState = SECTIONERROR;
-							}
-							break;
+						c = infile.peek();
+						if(c == EOF || isEOL(c))
+						{
+							sectionState = FOUNDIDONLY;
+						}
+						else if(d_commentchar != 0 && c == d_commentchar)
+						{
+							// discard '#'
+							//
+							infile.get();
+
+							sectionState = SECTIONCOMMENT;
+						}
+						else if(c == ' ' || c == '\t')
+						{
+							// discard whitespace
+							//
+							infile.get();
+
+							// LOOP
+						}
+						else
+						{
+							setError("105", "Illegal character found after end-of-section marker");
+							sectionState = SECTIONERROR;
+						}
+						break;
 					}
 					case SECTIONCOMMENT:
 					{
-							c = infile.peek();
-							if(c == EOF || isEOL(c))
-							{
-								sectionState = FOUNDIDCOMMENT;
-								stripTrailing(comment);
-							}
-							else
-							{
-								// append to comment
-								//
-								comment += infile.get();
-									
-								// LOOP			
-							}
-							break;
+						c = infile.peek();
+						if(c == EOF || isEOL(c))
+						{
+							sectionState = FOUNDIDCOMMENT;
+							stripTrailing(comment);
+						}
+						else
+						{
+							// append to comment
+							//
+							comment += infile.get();
+
+							// LOOP
+						}
+						break;
 					}
 					case SECTIONERROR:
 					{
@@ -326,14 +354,14 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			// discard the comment character
 			//
 			infile.get();
-				
+
 			// put the rest of the line into a string
 			//
-			std::string line="";
+			std::string line = "";
 			while(infile.good())
 			{
-				c=infile.get();
-				if( c == EOF || isEOL(c))
+				c = infile.get();
+				if(c == EOF || isEOL(c))
 				{
 					break;
 				}
@@ -341,7 +369,7 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			}
 
 			chompEOL(infile);
-			
+
 			// PROCESS THE COMMENT LINE
 			//
 			stripTrailing(line);
@@ -354,166 +382,166 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 			std::string value = "";
 			std::string comment = "";
 
-			while (kvState != ENDKEYVALUE)
-			{						
-				
-				switch (kvState)
+			while(kvState != ENDKEYVALUE)
+			{
+
+				switch(kvState)
 				{
 					case KEY:
 					{
-							int c = infile.peek();
-							
-							if(c == EOF || isEOL(c))
-							{
-								kvState = ENDKV;
-							}
-							else if(d_delimiter && c == d_delimiter)
-							{
-								// discard '='
-								//
-								infile.get();
+						int c = infile.peek();
 
-								kvState = STARTVALUE;
-							}
-							else if(!d_delimiter && (c == ' ' || c == '\t'))
-							{
-								// discard whitespace
-								//
-								infile.get();
-								kvState = STARTVALUE;
-							}
-							else if(d_commentchar != 0 && c == d_commentchar)
-							{
-								// discard '#'
-								//
-								infile.get();
+						if(c == EOF || isEOL(c))
+						{
+							kvState = ENDKV;
+						}
+						else if(d_delimiter && c == d_delimiter)
+						{
+							// discard '='
+							//
+							infile.get();
 
-								kvState = COMMENT;
-							}
-							else if(c == '\\')
-							{
-								// discard '\\'
-								//
-								infile.get();
+							kvState = STARTVALUE;
+						}
+						else if(!d_delimiter && (c == ' ' || c == '\t'))
+						{
+							// discard whitespace
+							//
+							infile.get();
+							kvState = STARTVALUE;
+						}
+						else if(d_commentchar != 0 && c == d_commentchar)
+						{
+							// discard '#'
+							//
+							infile.get();
 
-								kvState = KEYESCAPE;
-							}
-							else
-							{
-								// append to key
-								//
-								key += infile.get();
-									
-								// LOOP			
-							}
-							break;
+							kvState = COMMENT;
+						}
+						else if(c == '\\')
+						{
+							// discard '\\'
+							//
+							infile.get();
+
+							kvState = KEYESCAPE;
+						}
+						else
+						{
+							// append to key
+							//
+							key += infile.get();
+
+							// LOOP
+						}
+						break;
 					}
 					case KEYESCAPE:
 					{
-							int c = infile.peek();
-							if(c == EOF)
-							{
-								setError("107", "End of stream found after un-escaped backslash");
-								kvState = KVERROR;
-							}
-							else if(isEOL(c))
-							{
-								setError("108", "Escaped new-line is not allowed in key");
-								kvState = KVERROR;
-							}
-							else
-							{
-								// append to key
-								//
-								key += infile.get();
+						int c = infile.peek();
+						if(c == EOF)
+						{
+							setError("107", "End of stream found after un-escaped backslash");
+							kvState = KVERROR;
+						}
+						else if(isEOL(c))
+						{
+							setError("108", "Escaped new-line is not allowed in key");
+							kvState = KVERROR;
+						}
+						else
+						{
+							// append to key
+							//
+							key += infile.get();
 
-								kvState = KEY;
-							}
-							break;
+							kvState = KEY;
+						}
+						break;
 					}
 					case STARTVALUE:
 					{
-							int c = infile.peek();
+						int c = infile.peek();
 
-							if(c == EOF || isEOL(c))
-							{
-								kvState = ENDKV;
-							}
-							else if(d_commentchar != 0 && c == d_commentchar)
-							{
-								// discard '#'
-								//
-								infile.get();
+						if(c == EOF || isEOL(c))
+						{
+							kvState = ENDKV;
+						}
+						else if(d_commentchar != 0 && c == d_commentchar)
+						{
+							// discard '#'
+							//
+							infile.get();
 
-								kvState = COMMENT;
-							}
-							else if(c == ' ' || c == '\t')
-							{
-								// discard whitespace
-								//
-								infile.get();
+							kvState = COMMENT;
+						}
+						else if(c == ' ' || c == '\t')
+						{
+							// discard whitespace
+							//
+							infile.get();
 
-								// LOOP
-							}
-							else
-							{
-								kvState = VALUE;	
-							}
-							break;
+							// LOOP
+						}
+						else
+						{
+							kvState = VALUE;
+						}
+						break;
 					}
 					case KVERROR:
 					{
-							return false;
+						return false;
 					}
 					case FINDCOMMENT:
 					{
-							int c = infile.peek();
+						int c = infile.peek();
 
-							if(c == EOF || isEOL(c))
-							{
-								kvState = ENDKV;
-							}
-							else if(d_commentchar != 0 && c == d_commentchar)
-							{
-								// discard '#'
-								//
-								infile.get();
+						if(c == EOF || isEOL(c))
+						{
+							kvState = ENDKV;
+						}
+						else if(d_commentchar != 0 && c == d_commentchar)
+						{
+							// discard '#'
+							//
+							infile.get();
 
-								kvState = COMMENT;
-							}
-							else if(c == ' ' || c == '\t')
-							{
-								// discard whitespace
-								//
-								infile.get();
+							kvState = COMMENT;
+						}
+						else if(c == ' ' || c == '\t')
+						{
+							// discard whitespace
+							//
+							infile.get();
 
-								// LOOP
-							}
-							else
-							{
-								setError("109", "Illegal Character Found after quoted value.");
-								kvState = KVERROR;	
-							}
-							break;
+							// LOOP
+						}
+						else
+						{
+							setError("109", "Illegal Character Found after quoted value.");
+							kvState = KVERROR;
+						}
+						break;
 					}
 					case COMMENT:
 					{
-							int c = infile.peek();
+						int c = infile.peek();
 
-							if(c == EOF || isEOL(c))
-							{
-								stripTrailing(comment);
-								kvState = ENDKV;
-							}
-							else
-							{
-								// Append to comment
-								//
-								comment += infile.get();
+						if(c == EOF || isEOL(c))
+						{
+							stripTrailing(comment);
+							kvState = ENDKV;
+						}
+						else
+						{
+							// Append to comment
+							//
+							comment += infile.get();
 
-								// LOOP	
-							}
-							break;
+							// LOOP
+						}
+						break;
 					}
 					case VALUE:
 					{
@@ -534,146 +562,143 @@ bool ParserJuly2004::parse(std::istream& infile, AbstractOrganiser& organiser)
 					}
 					case QUOTEVALUE:
 					{
-							int c = infile.peek();
-							if(c == EOF)
-							{
-								setError("106", "End of stream found before final quote (\") in value");
-								kvState = KVERROR;
-							}
-							else if(c == '"')
-							{
-								// discard '"'
-								//
-								infile.get();
+						int c = infile.peek();
+						if(c == EOF)
+						{
+							setError("106", "End of stream found before final quote (\") in value");
+							kvState = KVERROR;
+						}
+						else if(c == '"')
+						{
+							// discard '"'
+							//
+							infile.get();
 
-								kvState = FINDCOMMENT;
-							}
-							else if(c == '\\')
-							{
-								// discard backslash
-								//
-								infile.get();
+							kvState = FINDCOMMENT;
+						}
+						else if(c == '\\')
+						{
+							// discard backslash
+							//
+							infile.get();
 
-								kvState = QUOTEESCAPE;
-							}
-							else
-							{
-								// append to value
-								//
-								value += infile.get();
+							kvState = QUOTEESCAPE;
+						}
+						else
+						{
+							// append to value
+							//
+							value += infile.get();
 
-								// LOOP
-							}
-							break;
+							// LOOP
+						}
+						break;
 					}
 					case QUOTEESCAPE:
 					{
-							int c = infile.peek();
-							if(c == EOF)
-							{
-								setError("107", "End of stream found after un-escaped backslash");
-								kvState = KVERROR;
-							}
-							else
-							{
-								// append to value
-								//
-								value += infile.get();
+						int c = infile.peek();
+						if(c == EOF)
+						{
+							setError("107", "End of stream found after un-escaped backslash");
+							kvState = KVERROR;
+						}
+						else
+						{
+							// append to value
+							//
+							value += infile.get();
 
-								kvState = QUOTEVALUE;
-							}
-							break;
+							kvState = QUOTEVALUE;
+						}
+						break;
 					}
 					case NONQUOTEVALUE:
 					{
-							int c = infile.peek();
+						int c = infile.peek();
 
-							if(c == EOF || isEOL(c))
-							{
-								stripTrailing(value);
+						if(c == EOF || isEOL(c))
+						{
+							stripTrailing(value);
 
-								kvState = ENDKV;
-							}
-							else if(d_commentchar != 0 && c == d_commentchar)
-							{
-								// discard '#'
-								//
-								infile.get();
-								
-								stripTrailing(value);
-								
-								kvState = COMMENT;
-							}
-							else if(c == '\\')
-							{
-								// discard backslash
-								//
-								infile.get();
+							kvState = ENDKV;
+						}
+						else if(d_commentchar != 0 && c == d_commentchar)
+						{
+							// discard '#'
+							//
+							infile.get();
 
-								kvState = NONQUOTEESCAPE;
-							}
-							else
-							{
-								// append to value
-								//
-								value += infile.get();
+							stripTrailing(value);
 
-								// LOOP
-							}
-							break;
+							kvState = COMMENT;
+						}
+						else if(c == '\\')
+						{
+							// discard backslash
+							//
+							infile.get();
+
+							kvState = NONQUOTEESCAPE;
+						}
+						else
+						{
+							// append to value
+							//
+							value += infile.get();
+
+							// LOOP
+						}
+						break;
 					}
 					case NONQUOTEESCAPE:
 					{
-							int c = infile.peek();
-							if(c == EOF)
-							{
-								setError("107", "End of stream found after un-escaped backslash");
-								kvState = KVERROR;
-							}
-							else
-							{
-								// append to value
-								//
-								c = infile.get();
-								value += c;
+						int c = infile.peek();
+						if(c == EOF)
+						{
+							setError("107", "End of stream found after un-escaped backslash");
+							kvState = KVERROR;
+						}
+						else
+						{
+							// append to value
+							//
+							c = infile.get();
+							value += c;
 
-								// SPECIAL CASE FOR ESCAPED CRLFs:
-								//
-								// if c is newline and next character is also newline, 
-								// we keep both of them if they are different forms of newline
-								// 
-												int next_c = infile.peek();
-								if(isEOL(c) && isEOL(next_c) && (c != next_c))
-								{
-									value += infile.get();
-								} 
-								kvState = NONQUOTEVALUE;
+							// SPECIAL CASE FOR ESCAPED CRLFs:
+							//
+							// if c is newline and next character is also newline,
+							// we keep both of them if they are different forms of newline
+							//
+							int next_c = infile.peek();
+							if(isEOL(c) && isEOL(next_c) && (c != next_c))
+							{
+								value += infile.get();
 							}
-							break;
-					}				
+							kvState = NONQUOTEVALUE;
+						}
+						break;
+					}
 					case ENDKV:
 					{
-							chompEOL(infile);
+						chompEOL(infile);
 
-							stripTrailing(key);
-							organiser.foundData(key.c_str(), value.c_str(), comment.c_str());
+						stripTrailing(key);
+						organiser.foundData(key.c_str(), value.c_str(), comment.c_str());
 
-							kvState = ENDKEYVALUE;
-							break;
+						kvState = ENDKEYVALUE;
+						break;
 					}
 					case ENDKEYVALUE:
 					{
-							break;
+						break;
 					}
 				} // end switch
-			} // end while
+			}	  // end while
 		}
 	}
 	return true;
 }
 
-}} // end namespaces
-
-
-
-
+} // namespace config
+} // namespace rude

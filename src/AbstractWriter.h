@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or (at your option)
 // any later version.
-// 
+//
 // RudeConfig is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with RudeConfig; (see COPYING) if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -29,8 +29,10 @@
 #define INCLUDED_STRING
 #endif
 
-namespace rude{
-namespace config{
+namespace rude
+{
+namespace config
+{
 
 class File;
 class Section;
@@ -38,30 +40,29 @@ class KeyValue;
 class Comment;
 class WhiteSpace;
 
-class AbstractWriter{
+class AbstractWriter
+{
 
 
-protected:
-
+  protected:
 	char d_commentchar;
 	char d_delimiter;
 	bool d_preservedeleted;
 	bool d_preservecomments;
 	bool d_preservewhitespace;
-	
+
 	std::ostream *d_outputstream;
 
 	AbstractWriter();
 
-public:
+  public:
+	virtual void visitFile(const File &configfile) const = 0;
+	virtual void visitSection(const Section &configsection) const = 0;
+	virtual void visitKeyValue(const KeyValue &dataline) const = 0;
+	virtual void visitComment(const Comment &comment) const = 0;
+	virtual void visitWhiteSpace(const WhiteSpace &whitespace) const = 0;
 
-	virtual void visitFile(const File& configfile) const = 0;
-	virtual void visitSection(const Section& configsection) const = 0;
-	virtual void visitKeyValue(const KeyValue& dataline) const = 0;
-	virtual void visitComment(const Comment& comment) const = 0;
-	virtual void visitWhiteSpace(const WhiteSpace& whitespace) const = 0;
-
-	void setOutputStream( std::ostream& stream);
+	void setOutputStream(std::ostream &stream);
 	void setCommentChar(char);
 	void setDelimiter(char);
 	void preserveDeleted(bool doit);
@@ -69,11 +70,10 @@ public:
 	void preserveWhiteSpace(bool doit);
 
 	virtual ~AbstractWriter();
-
 };
 
 
-}} // end namespaces
+} // namespace config
+} // namespace rude
 
 #endif
-
