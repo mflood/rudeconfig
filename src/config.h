@@ -67,11 +67,10 @@ public:
 	Config &operator=(const Config &) = delete;
 
 	//=
-	// Returns the version of the component.
+	// Returns the release version of the library, for example "6.0.0".
 	// 
-	// The version is specified by <b>X.Y</B> where: 
-	// <B>X</B> is the version of the interface (this class), and
-	// <B>Y</B> is the version of the implementation (the internals).
+	// Before 6.0.0 this returned an interface.implementation pair
+	// ("3.0"), which did not identify the release that was linked.
 	// 
 	// <b>Example:</b>
 	// 

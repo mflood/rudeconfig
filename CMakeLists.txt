@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(rudeconfig
-    VERSION 5.1.1
+    VERSION 6.0.0
     DESCRIPTION "C++ library for reading and writing configuration/.ini files"
     HOMEPAGE_URL "https://github.com/mflood/rudeconfig"
     LANGUAGES CXX)
@@ -32,6 +32,13 @@ add_library(rudeconfig
 add_library(rudeconfig::rudeconfig ALIAS rudeconfig)
 
 target_compile_features(rudeconfig PUBLIC cxx_std_17)
+
+# Single source of truth for the version reported by Config::version().
+# Generated rather than hardcoded so it cannot drift from the project version
+# the way the old "3.0" string did.
+configure_file(src/rudeconfig_version.h.in
+    "${CMAKE_CURRENT_BINARY_DIR}/internal/rudeconfig_version.h" @ONLY)
+target_include_directories(rudeconfig PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/internal")
 
 # Public header is consumed as <rude/config.h>; stage it under that path
 # so in-tree consumers see the same layout as installed ones.
