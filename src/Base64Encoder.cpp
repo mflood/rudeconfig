@@ -92,7 +92,11 @@ char *Base64Encoder::encode(const char *data, int datalength, int &outlength)
 		return (char *) 0;
 	};
 
-	char *retval = new char[datalength * 2];
+	// Widen before multiplying: datalength is an int, so the product
+	// overflowed in int arithmetic before being widened for new[],
+	// which would under-allocate for very large inputs.
+	//
+	char *retval = new char[(size_t) datalength * 2];
 	const char *crlf = "\n";
 	int crlflength = strlen(crlf);
 	int maxlinelength = 76;

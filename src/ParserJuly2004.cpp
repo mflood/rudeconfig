@@ -159,7 +159,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 
 			while(c != EOF && isspace(c))
 			{
-				whitespace += infile.get();
+				whitespace += (char) infile.get();
 				c = infile.peek();
 			}
 			organiser.foundWhiteSpace(whitespace.c_str());
@@ -249,7 +249,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						}
 						else
 						{
-							sectionID += infile.get();
+							sectionID += (char) infile.get();
 
 							// LOOP
 						}
@@ -270,7 +270,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						}
 						else
 						{
-							sectionID += infile.get();
+							sectionID += (char) infile.get();
 							sectionState = SECTIONID;
 						}
 						break;
@@ -317,7 +317,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to comment
 							//
-							comment += infile.get();
+							comment += (char) infile.get();
 
 							// LOOP
 						}
@@ -365,7 +365,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 				{
 					break;
 				}
-				line += c;
+				line += (char) c;
 			}
 
 			chompEOL(infile);
@@ -430,7 +430,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to key
 							//
-							key += infile.get();
+							key += (char) infile.get();
 
 							// LOOP
 						}
@@ -453,7 +453,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to key
 							//
-							key += infile.get();
+							key += (char) infile.get();
 
 							kvState = KEY;
 						}
@@ -537,7 +537,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// Append to comment
 							//
-							comment += infile.get();
+							comment += (char) infile.get();
 
 							// LOOP
 						}
@@ -588,7 +588,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to value
 							//
-							value += infile.get();
+							value += (char) infile.get();
 
 							// LOOP
 						}
@@ -606,7 +606,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to value
 							//
-							value += infile.get();
+							value += (char) infile.get();
 
 							kvState = QUOTEVALUE;
 						}
@@ -644,7 +644,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 						{
 							// append to value
 							//
-							value += infile.get();
+							value += (char) infile.get();
 
 							// LOOP
 						}
@@ -663,7 +663,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 							// append to value
 							//
 							c = infile.get();
-							value += c;
+							value += (char) c;
 
 							// SPECIAL CASE FOR ESCAPED CRLFs:
 							//
@@ -673,7 +673,7 @@ bool ParserJuly2004::parse(std::istream &infile, AbstractOrganiser &organiser)
 							int next_c = infile.peek();
 							if(isEOL(c) && isEOL(next_c) && (c != next_c))
 							{
-								value += infile.get();
+								value += (char) infile.get();
 							}
 							kvState = NONQUOTEVALUE;
 						}
