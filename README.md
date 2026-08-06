@@ -8,12 +8,14 @@ structure.
 
 - Preserves comments, blank lines, section order, and key order across a
   load-modify-save round trip.
-- Provides typed access to strings, integers, booleans, and doubles, plus
+- Provides typed access to strings, integers, booleans, doubles, and
   base64-backed binary values.
-- Supports custom delimiters, comment characters, duplicate keys, and
-  case-insensitive lookup.
+- Supports custom delimiters and comment characters.
 - Has no external dependencies beyond a C++17 standard library.
 - Builds as a static or shared library on Linux, macOS, and Windows.
+
+First released in 2000, RudeConfig has been updated for modern C++ projects
+with CMake, C++17, cross-platform CI, and package-consumer coverage.
 
 ```ini
 # server settings
@@ -58,23 +60,22 @@ c++ -std=c++17 app.cpp $(pkg-config --cflags --libs rudeconfig)
 
 ## Build and install
 
-RudeConfig requires CMake 3.16 or newer and a C++17 compiler.
+RudeConfig 6.1.0 requires CMake 3.16 or newer and a C++17 compiler.
 
 ```sh
-git clone https://github.com/mflood/rudeconfig.git
+git clone --branch v6.1.0 https://github.com/mflood/rudeconfig.git
 cd rudeconfig
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-ctest --test-dir build
+ctest --test-dir build --output-on-failure
 cmake --install build --prefix ./install
 ```
 
 The default build is static. Pass `-DBUILD_SHARED_LIBS=ON` to build a shared
-library.
-
-For an install outside the system prefix, point CMake consumers at it with
-`-DCMAKE_PREFIX_PATH=/path/to/install`. For pkg-config, add
-`/path/to/install/lib/pkgconfig` to `PKG_CONFIG_PATH`.
+library. For an install outside the system prefix, point CMake consumers at it
+with `-DCMAKE_PREFIX_PATH=/path/to/install`. For pkg-config, add
+`/path/to/install/lib/pkgconfig` to `PKG_CONFIG_PATH` (the library directory
+may be `lib64` on some platforms).
 
 The complete runnable example is in
 [`examples/demo.cpp`](examples/demo.cpp).
@@ -84,11 +85,11 @@ The complete runnable example is in
 With an installed copy:
 
 ```cmake
-find_package(rudeconfig REQUIRED)
+find_package(rudeconfig 6.1 REQUIRED)
 target_link_libraries(myapp PRIVATE rudeconfig::rudeconfig)
 ```
 
-Or include it directly with `FetchContent`:
+Or include the stable release directly with `FetchContent`:
 
 ```cmake
 include(FetchContent)
@@ -113,8 +114,8 @@ named section headers reports four sections.
 ### Missing values
 
 `getValue()` returns `""` for a missing key, `getIntValue()` returns `0`, and
-`getBoolValue()` returns `false`. Use the enumeration and existence APIs when
-you need to distinguish a missing value from one containing its default.
+`getBoolValue()` returns `false`. Use the enumeration APIs when you need to
+distinguish a missing value from one containing its type's default value.
 
 ### Structure preservation
 
@@ -127,6 +128,7 @@ spacing, blank lines, and ordering are retained when the file is saved.
 - Runnable example: [`examples/demo.cpp`](examples/demo.cpp)
 - Manual page: `rudeconfig(3)`
 - Release notes: [`NEWS`](NEWS)
+- Packaging notes: [`docs/PACKAGING.md`](docs/PACKAGING.md)
 - Bug reports: [GitHub Issues](https://github.com/mflood/rudeconfig/issues)
 
 ## License

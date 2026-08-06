@@ -1,0 +1,78 @@
+set(source_dir "@PROJECT_SOURCE_DIR@")
+set(smoke_root "@PROJECT_BINARY_DIR@/package-smoke-@PACKAGE_KIND@")
+set(package_build "${smoke_root}/package-build")
+set(initial_prefix "${smoke_root}/initial-prefix")
+set(relocated_prefix "${smoke_root}/relocated-prefix")
+set(consumer_build "${smoke_root}/consumer-build")
+
+file(REMOVE_RECURSE "${smoke_root}")
+file(MAKE_DIRECTORY "${smoke_root}")
+
+function(run_checked description)
+    execute_process(
+        COMMAND ${ARGN}
+        RESULT_VARIABLE result
+        COMMAND_ECHO STDOUT)
+    if(NOT result EQUAL 0)
+        message(FATAL_ERROR "${description} failed with exit code ${result}")
+    endif()
+endfunction()
+
+set(generator_args -G "@CMAKE_GENERATOR@")
+if(NOT "@CMAKE_GENERATOR_PLATFORM@" STREQUAL "")
+    list(APPEND generator_args -A "@CMAKE_GENERATOR_PLATFORM@")
+endif()
+if(NOT "@CMAKE_GENERATOR_TOOLSET@" STREQUAL "")
+    list(APPEND generator_args -T "@CMAKE_GENERATOR_TOOLSET@")
+endif()
+
+run_checked("package configure"
+    "@CMAKE_COMMAND@" -S "${source_dir}" -B "${package_build}"
+    ${generator_args}
+    -DBUILD_SHARED_LIBS=@PACKAGE_SHARED@
+    -DBUILD_TESTING=OFF
+    -DRUDECONFIG_BUILD_EXAMPLES=OFF
+    -DCMAKE_BUILD_TYPE=Release
+    "-DCMAKE_INSTALL_PREFIX=${initial_prefix}")
+run_checked("package build"
+    "@CMAKE_COMMAND@" --build "${package_build}" --config Release)
+run_checked("package install"
+    "@CMAKE_COMMAND@" --install "${package_build}" --config Release)
+
+# A consumer must still work after the complete install tree is moved.
+file(RENAME "${initial_prefix}" "${relocated_prefix}")
+
+set(test_pkgconfig OFF)
+if(NOT WIN32)
+    set(test_pkgconfig ON)
+    file(GLOB pkgconfig_dirs "${relocated_prefix}/*/pkgconfig")
+    if(NOT pkgconfig_dirs)
+        message(FATAL_ERROR "installed rudeconfig.pc was not found")
+    endif()
+    list(JOIN pkgconfig_dirs "@PATH_SEPARATOR@" pkgconfig_path)
+    set(ENV{PKG_CONFIG_PATH} "${pkgconfig_path}")
+endif()
+
+run_checked("consumer configure"
+    "@CMAKE_COMMAND@" -S "${source_dir}/tests/package-consumer"
+    -B "${consumer_build}" ${generator_args}
+    -DCMAKE_BUILD_TYPE=Release
+    "-DCMAKE_PREFIX_PATH=${relocated_prefix}"
+    -DRUDECONFIG_TEST_PKGCONFIG=${test_pkgconfig})
+run_checked("consumer build"
+    "@CMAKE_COMMAND@" --build "${consumer_build}" --config Release)
+
+if(NOT "@CMAKE_CONFIGURATION_TYPES@" STREQUAL "")
+    set(consumer_bin_dir "${consumer_build}/Release")
+else()
+    set(consumer_bin_dir "${consumer_build}")
+endif()
+set(runtime_path "${relocated_prefix}/bin@PATH_SEPARATOR@$ENV{PATH}")
+run_checked("CMake consumer execution"
+    "@CMAKE_COMMAND@" -E env "PATH=${runtime_path}"
+    "${consumer_bin_dir}/cmake_consumer@CMAKE_EXECUTABLE_SUFFIX@")
+if(test_pkgconfig)
+    run_checked("pkg-config consumer execution"
+        "@CMAKE_COMMAND@" -E env "PATH=${runtime_path}"
+        "${consumer_bin_dir}/pkgconfig_consumer@CMAKE_EXECUTABLE_SUFFIX@")
+endif()
