@@ -4,6 +4,8 @@ RudeConfig is a lightweight C++ library for reading, modifying, and writing
 configuration and `.ini` files while preserving their human-friendly
 structure.
 
+## Why RudeConfig?
+
 - Preserves comments, blank lines, section order, and key order across a
   load-modify-save round trip.
 - Provides typed access to strings, integers, booleans, doubles, and
