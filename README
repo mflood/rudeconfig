@@ -22,11 +22,9 @@ RudeConfig builds with CMake:
 Then include <rude/config.h> and link with -lrudeconfig, or use
 find_package(rudeconfig) from CMake, or pkg-config.
 
-The autotools build (configure / Makefile.am) was removed in this release.
-It had been deprecated since the CMake build landed, and its shipped
-config.guess dated from 2003, so it could not configure on any ARM machine -
-which today means every Apple Silicon Mac and every ARM Linux server.  If you
-need it, check out the v6.0.1 tag or earlier.
+The supported build system is CMake. The earlier autotools build is available
+in the v6.0.1 tag for projects that still rely on that workflow; CMake is the
+recommended option for current ARM and x86 platforms.
 
 See file `COPYING' for copying conditions.
 See file `NEWS' for a list of major changes in the current release.
@@ -34,17 +32,17 @@ See file `THANKS' for a list of contributors.
 See file 'AUTHORS' for contact information
 
 
-*** BUG REPORTING ***
+*** SUPPORT AND FEEDBACK ***
 
-Please report bugs at https://github.com/mflood/rudeconfig/issues
+Please share bug reports and documentation feedback at
+https://github.com/mflood/rudeconfig/issues
 
-A bug report should contain an adequate description of the problem, your
-input, what you expected, what you got, and why this is wrong.  Where
-applicable, please include actual data files.  Consider documentation errors
-as bugs, and report them as such.
+Helpful reports include a description of the behavior, the relevant input,
+the expected result, and the observed result. Where applicable, please include
+a minimal data file that reproduces the behavior.
 
-The rudeserver.com addresses and discussion forum referenced by older
-releases are no longer active.
+Project support and discussion have moved from the earlier rudeserver.com
+addresses to GitHub Issues.
 
 
 *** COPYING ***
@@ -68,4 +66,3 @@ You should have received a copy of the GNU General Public License
 along with RudeConfig; (see COPYING) if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
-

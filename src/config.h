@@ -60,9 +60,8 @@ class Config
 	Config();
 
 	//=
-	// Config owns its implementation through a raw pointer, so copying an
-	// instance would leave two objects owning it and double-free on destruction.
-	// Copying is therefore disabled - pass Config by reference instead.
+	// Config has unique ownership of its implementation. Copying is therefore
+	// disabled; pass Config by reference instead.
 	//=
 	Config(const Config &) = delete;
 	Config &operator=(const Config &) = delete;
@@ -153,8 +152,8 @@ class Config
 	//=
 	// Sets whether or not deleted data will be preserved as comments.
 	// If set to true, deleted data will be converted into comments when
-	// the save() method is called.  If set to false, deleted data
-	// will not be compeltely discarded. Default is false (no preserve).
+	// the save() method is called. If set to false, deleted data is omitted.
+	// Default is false (no preserve).
 	// Affects the current instance only.
 	//=
 	void preserveDeletedData(bool shouldPreserve);
@@ -196,8 +195,7 @@ class Config
 	bool save(const char *filepath);
 
 	//=
-	// Removes the contents of the configuration file - completely wipes it out.
-	// Does not preserve anything.  Afterwards, the current section is set
+	// Clears the contents of the configuration file. Afterwards, the current section is set
 	// to the empty section (""), which is the unnamed section
 	// at the beginning of the configuration file.
 	//=

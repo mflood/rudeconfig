@@ -4,8 +4,8 @@
 # Before 5.1.1 the .pc read "prefix=/usr/local" no matter where the package was
 # actually installed, so the README's own
 #   cmake --install build --prefix <dir> && pkg-config --cflags rudeconfig
-# flow produced -I/usr/local/include and the compile failed with
-# "'rude/config.h' file not found" -- or, worse, silently found an older copy.
+# flow could otherwise continue to reference the configure-time prefix instead
+# of the requested installation location.
 
 if(NOT EXISTS "${PC_FILE}")
     message(FATAL_ERROR "pkg-config file not generated: ${PC_FILE}")

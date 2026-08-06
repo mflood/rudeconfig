@@ -3,90 +3,66 @@ See ChangeLog for more detailed information on internal changes
 See the end for copying conditions.
 
 _______________________________________________________________________________
+Post-release maintenance after 6.1.0
+
+	- Reconciled the product-forward README with the 6.1.0 API and pinned all
+	  install and FetchContent examples to the current stable v6.1.0 tag.
+	- Added clean-consumer package smoke tests for static and shared installs,
+	  the CMake package config, pkg-config, and install-prefix relocation.
+	- Added packaging handoff notes for the vcpkg/Conan pilot and a release
+	  checklist to keep documentation, tags, releases, and recipes aligned.
+
+_______________________________________________________________________________
 Release 6.1.0 - Matthew Flood 2026-07-30
 
-	- REMOVED: the autotools build (configure, configure.ac, Makefile.am,
-	  Makefile.in, aclocal.m4, config.guess, config.sub, install-sh,
-	  ltmain.sh, missing, depcomp and INSTALL).  It has been deprecated
-	  since the CMake build landed, and the config.guess it shipped dated
-	  from 2003, so it could not configure on any ARM machine - today that
-	  means every Apple Silicon Mac and every ARM Linux server.  Its
-	  install-sh was also committed without an executable bit, so
-	  "make install" failed on macOS.  Check out v6.0.1 or earlier if you
-	  still need it.
-	- Consumers using FetchContent no longer inherit this project's demo
-	  and test_* targets.  Tests and examples are now added only when this
-	  is the top-level project.
+	- CMake is now the supported build system. The earlier autotools files
+	  have been retired from the current tree and remain available in v6.0.1
+	  for projects that still use them. This gives current ARM and x86
+	  platforms one consistent build path.
+	- FetchContent consumers now receive only the library targets. Tests and
+	  examples are added when rudeconfig is the top-level project.
 	- The FetchContent example in README.md now pins GIT_TAG to v6.0.1
 	  rather than tracking master.
-	- The plain README no longer points at the removed INSTALL file or at
-	  rudeserver.com addresses that stopped resolving years ago; bug
-	  reports go to GitHub issues.
+	- Documentation now points to the CMake installation workflow and GitHub
+	  Issues as the current support channel.
 
 _______________________________________________________________________________
 Release 6.0.1 - Matthew Flood 2026-07-30
 
-	- An empty value is now written with its delimiter ("key = ") rather
-	  than as a bare "key".  The bare form reloaded correctly through
-	  this library, so it looked harmless, but other ini readers treat a
-	  line with no delimiter as malformed or as a valueless flag - so an
-	  empty string did not survive leaving rudeconfig.
-	- deleteSection() now returns false when the section has already been
-	  deleted, as documented.  It reported success every time it was
-	  called for a section that still existed in the file, deleted or
-	  not.
-	- Asking about a section that does not exist no longer inserts an
-	  empty entry into the internal section map.  setSection() and
-	  deleteSection() looked names up with std::map::operator[], which
-	  default-inserts, so repeatedly querying unknown section names grew
-	  the map for the lifetime of the object.
-	- load() now fails when given a directory.  A directory opens
-	  successfully as an ifstream on POSIX and then reads as empty, so
-	  load(".") returned true and handed back a silently empty
-	  configuration with no error set.
+	- Empty values are now written with their delimiter ("key = ") for
+	  consistent interoperability with other ini readers.
+	- deleteSection() now returns false when a section has already been
+	  deleted, matching the documented contract.
+	- Looking up a section that does not exist now leaves the internal
+	  section map unchanged.
+	- load() now reports an error when the requested path is a directory.
 
 _______________________________________________________________________________
 Release 6.0.0 - Matthew Flood 2026-07-30
 
-	- MAJOR VERSION BUMP: rude::Config is no longer copyable (see below).
-	  That is a source-incompatible change, so this is 6.0.0 rather than
-	  5.1.1.  The shared-library ABI is unchanged and the soname stays at
-	  3; only code that copied a Config needs to change, and such code was
-	  already double-freeing.
-	- Fixed out-of-bounds read in getDataNameAt() and getDataValueAt().
-	  Both indexed the data-member vector with no bounds check, so an
-	  out-of-range index read unowned memory instead of returning NULL
-	  as documented.  The sentinel loop recommended by config.h's own
-	  example was therefore unsafe on every use.  They now return NULL.
-	- rude::Config is no longer copyable.  It owns its implementation
-	  through a raw pointer, so the compiler-generated copy left two
-	  objects owning it and double-freed on destruction; putting a
-	  Config in a container or passing it by value corrupted the heap.
-	  Copy construction and copy assignment are now deleted, which turns
-	  that silent corruption into a compile error.  Pass by reference.
-	- Fixed pkg-config file: it hardcoded the prefix given at configure
-	  time, so installing with "cmake --install --prefix <dir>" produced
-	  a rudeconfig.pc still pointing at the configure-time prefix (by
-	  default /usr/local).  The prefix is now relative to ${pcfiledir}.
-	- Config::version() now reports the release version of the library
-	  (for example "6.0.0").  It previously returned a hardcoded "3.0"
-	  interface.implementation pair that had not tracked a release since
-	  2005, so callers could not tell what they had linked.  The value is
-	  now generated from the build so it cannot drift again.
-	- Added regression tests for all of the above, including an
-	  out-of-range enumeration test that fails under AddressSanitizer
-	  without the fix, and a test that version() matches the build.
+	- Major version update: rude::Config is no longer copyable. This is a
+	  source-level compatibility change; the shared-library ABI and soname
+	  remain unchanged. Pass Config objects by reference.
+	- getDataNameAt() and getDataValueAt() now return NULL for out-of-range
+	  indexes, matching the documented enumeration contract.
+	- Copy construction and copy assignment are now explicitly disabled to
+	  reflect Config's ownership model at compile time.
+	- The pkg-config prefix is now relative to ${pcfiledir}, so installations
+	  made with "cmake --install --prefix <dir>" remain relocatable.
+	- Config::version() now reports the library release version (for example
+	  "6.0.0") and is generated from the build configuration.
+	- Added regression coverage for enumeration bounds, copy semantics,
+	  pkg-config relocation, and release-version reporting.
 
 _______________________________________________________________________________
 Release 5.1.0 - Matthew Flood 2026-07-30
 
-	- Fixed infinite loop in Config::load() on platforms where char
-	  is unsigned (Linux/ARM, Linux/PowerPC): the parser stored
-	  istream::peek() results in char, so EOF was never detected.
-	- New CMake build system (autotools files retained but deprecated);
-	  installs CMake package config and pkg-config files.
-	- Code modernized to compile cleanly as C++17 with -Wall -Wextra
-	  (removed 'register', sprintf -> snprintf, UTF-8-safe isspace).
+	- Config::load() now handles end-of-file consistently on platforms where
+	  char is unsigned, including Linux/ARM and Linux/PowerPC.
+	- Added the CMake build system, including installed CMake package config
+	  and pkg-config files; autotools remained available during this release.
+	- Code updated to compile cleanly as C++17 with -Wall -Wextra, including
+	  current language keywords, snprintf, and UTF-8-safe whitespace handling.
 	- Added test suite (ctest) and GitHub Actions CI covering Linux
 	  x86_64/ARM, macOS, and Windows, plus an ASan/UBSan job.
 	- New README with verified quick-start example.
@@ -122,7 +98,7 @@ Release 5.0.4-1 - Matthew Flood 2007-01-19
 _______________________________________________________________________________
 Release 5.0.3-1 - Matthew Flood 2006-07-31
 
-	- Changed versioning system again.  
+	- Updated the versioning system.
 	- Minor changes to facilitate Windows builds
 		* changed #include's of  <cstring> to <string.h>
 		* added .c_str() to a string object to correct shorthand if statement ( a ? x : y )
@@ -200,4 +176,3 @@ You should have received a copy of the GNU General Public License
 along with RudeConfig; (see COPYING) if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
-
